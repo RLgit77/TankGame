@@ -3,12 +3,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class gameclienttest implements ActionListener,KeyListener,MouseMotionListener,MouseListener{
+public class GameClient implements ActionListener,KeyListener,MouseMotionListener,MouseListener{
 	
 	//---------------------------------------------------------------PROPERTIES----------------------------------------------------------------//
 	SuperSocketMaster ssm;
-	String socketSetup = "Client";
-	String socketID = "2";
+	String socketSetup = "Server";
+	
+	String socketID = "Client 1";	//this will be set by the program, maybe use IP?
+	//clients would send their movement/clicks to the server, which would forward them to all other players
+	//
+	//OR the clients could only act as controllers, essentially streaming the game from the server - since supersocket only supports text
+	//   we would need to send all variables in one string which could get complicated, we could look into other networking tools
 	
 	JFrame frame;
 	GamePanel panel;
@@ -91,7 +96,10 @@ public class gameclienttest implements ActionListener,KeyListener,MouseMotionLis
 	
 	
 	//---------------------------------------------------------------CONSTRUCTOR---------------------------------------------------------------//
-	public gameclienttest(){
+	public GameClient(String setup){
+		socketSetup = setup;
+		System.out.println(socketSetup);
+		
 		frame = new JFrame("Animation Keyboard Mouse Test");
 			frame.addKeyListener(this);
 		panel = new GamePanel();
@@ -118,7 +126,12 @@ public class gameclienttest implements ActionListener,KeyListener,MouseMotionLis
 	
 	//------------------------------------------------------------------MAIN-------------------------------------------------------------------//
 	public static void main (String[] args) {
-		new gameclienttest();
+		String setup;
+		//change these to test client/server versions
+		//setup = "Server";
+		setup = "Client";
+		
+		new GameClient(setup);
 	}
 }
 

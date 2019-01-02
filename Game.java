@@ -8,7 +8,8 @@ public class Game implements ActionListener,KeyListener,MouseMotionListener,Mous
 	//---------------------------------------------------------------PROPERTIES----------------------------------------------------------------//
 	SuperSocketMaster ssm;
 	String socketSetup = "Server";
-	String socketID = "1";	//this will be set by the program, maybe use IP?
+	
+	String socketID = "Server";	//this will be set by the program, maybe use IP?
 	//clients would send their movement/clicks to the server, which would forward them to all other players
 	//
 	//OR the clients could only act as controllers, essentially streaming the game from the server - since supersocket only supports text
@@ -95,7 +96,10 @@ public class Game implements ActionListener,KeyListener,MouseMotionListener,Mous
 	
 	
 	//---------------------------------------------------------------CONSTRUCTOR---------------------------------------------------------------//
-	public Game(){
+	public Game(String setup){
+		socketSetup = setup;
+		System.out.println(socketSetup);
+		
 		frame = new JFrame("Animation Keyboard Mouse Test");
 			frame.addKeyListener(this);
 		panel = new GamePanel();
@@ -122,7 +126,12 @@ public class Game implements ActionListener,KeyListener,MouseMotionListener,Mous
 	
 	//------------------------------------------------------------------MAIN-------------------------------------------------------------------//
 	public static void main (String[] args) {
-		new Game();
+		String setup;
+		//change these to test client/server versions
+		setup = "Server";
+		//setup = "Client";
+		
+		new Game(setup);
 	}
 }
 
