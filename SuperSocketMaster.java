@@ -34,7 +34,7 @@ public class SuperSocketMaster{
   private String strIncomingText = null;
   private SocketConnection soccon = null;
   transient ActionListener actionListener = null;
-  // Methods
+  // Methods  
   /**
    * Sends text over the open socket<p>
    * If the socket is not open, the text goes nowhere<p>
