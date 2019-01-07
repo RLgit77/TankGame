@@ -5,10 +5,14 @@
 
 
 
-public class RunGame{
+public class RunGameServer{
 	public static void main (String args[]){
 		
-		new GameServer();
+		ServerThread sT = new ServerThread();
+		Thread sThread = new Thread(sT);
+		sThread.start();
+		
+		new GameClient();
 		
 	}
 }
