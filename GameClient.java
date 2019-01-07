@@ -10,11 +10,11 @@ public class GameClient implements ActionListener,KeyListener,MouseMotionListene
 	JFrame frame;
 	GamePanel panel;
 	Timer timer;
-	
+
 	int Client1ClickX = 0;
-	
+
 	//-----------------------------------------------------------------METHODS-----------------------------------------------------------------//
-	
+
 	//ActionListener
 	public void actionPerformed(ActionEvent e){
 		//get Data from server - will be GUI info, use it to draw
@@ -25,8 +25,8 @@ public class GameClient implements ActionListener,KeyListener,MouseMotionListene
 			panel.repaint();
 		}
 	}
-	
-	
+
+
 	//KeyListener
 	public void keyPressed(KeyEvent e){
 	}
@@ -36,17 +36,19 @@ public class GameClient implements ActionListener,KeyListener,MouseMotionListene
 	//
 	public void keyReleased(KeyEvent e){
 	}
-	
-	
+
+
 	//MouseMotionListener
 	@Override
 	public void mouseDragged(MouseEvent e){
 	}
 	//
 	public void mouseMoved(MouseEvent e){
+		ssm.sendText(e.getX()+"");
+		System.out.println("Sent data to server: "+e.getX());
 	}
-	
-	
+
+
 	//MouseListener
 	public void mouseExited(MouseEvent e){
 	}
@@ -61,16 +63,14 @@ public class GameClient implements ActionListener,KeyListener,MouseMotionListene
 	}
 	//
 	public void mouseClicked(MouseEvent e){
-		ssm.sendText(e.getX()+"");
-		System.out.println("Sent data to server: "+e.getX());
 	}
-	
+
 	//---------------------------------------------------------------CONSTRUCTOR---------------------------------------------------------------//
 	public GameClient(){
-		
+
 		ssm = new SuperSocketMaster("127.0.0.1",1337, this);
 		ssm.connect();
-		
+
 		frame = new JFrame("Client");
 			frame.addKeyListener(this);
 		panel = new GamePanel();
@@ -79,12 +79,11 @@ public class GameClient implements ActionListener,KeyListener,MouseMotionListene
 			panel.addMouseListener(this);
 		timer = new Timer(1000/60, this);
 			timer.start();
-		
+
 		frame.setContentPane(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
-		
+
 	}
 }
-

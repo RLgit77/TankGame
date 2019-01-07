@@ -8,17 +8,17 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class GameServer implements ActionListener{
-	
+
 	//---------------------------------------------------------------PROPERTIES----------------------------------------------------------------//
-	
+
 	SuperSocketMaster ssm;
 	Timer timer;
-	
+
 	//used to get variables from string - we'll need to hard code more or use a hashmap if we have multiple variables for players/bullets
 	String C1ClickX = "0";
 	//-----------------------------------------------------------------METHODS-----------------------------------------------------------------//
-		
-	
+
+
 	//ActionListener
 	public void actionPerformed(ActionEvent e){
 		//data received
@@ -26,28 +26,25 @@ public class GameServer implements ActionListener{
 			//when data arrives, check it for variables
 			String data = ssm.readText();
 			System.out.println("Recieved data from client: "+data);
-			C1ClickX = data;
-			//for testing, just re-send data to client
-			ssm.sendText(C1ClickX);
+			ssm.sendText(data);
 		}
-		
+
 		if(e.getSource() == timer){
 			//use vars here, calculate movement and send to clients
-			
+
 		}
 	}
-	
-	
-		
+
+
+
 	//---------------------------------------------------------------CONSTRUCTOR---------------------------------------------------------------//
 	public GameServer(){
-		
+
 		timer = new Timer(1000/60, this);
 		timer.start();
-		
+
 		ssm = new SuperSocketMaster(1337, this);
 		ssm.connect();
-		
+
 	}
 }
-
