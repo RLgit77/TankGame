@@ -19,20 +19,16 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 	SuperSocketMaster ssm;
 	
 	String finalSentData = ",,,,,,";
-	String MvmtU = "MvmtUf";
-	String MvmtL = "MvmtLf";
-	String MvmtD = "MvmtDf";
-	String MvmtR = "MvmtRf";
+	String MvmtU = "MvmtUf,";
+	String MvmtL = "MvmtLf,";
+	String MvmtD = "MvmtDf,";
+	String MvmtR = "MvmtRf,";
 	String sentMvmtInput = MvmtU + MvmtL + MvmtD + MvmtR;
-	String ifShot = "Shotf";
-	String mouseX = "";
-	String mouseY = "";
+	String ifShot = "Shotf,";
+	String mouseX = "640";
+	String mouseY = "360";
 	Timer thetimer;
 	
-	boolean blnGoUp;
-	boolean blnGoLeft;
-	boolean blnGoDown;
-	boolean blnGoRight;
 	
 
 	//-----------------------------------------------------------------METHODS-----------------------------------------------------------------//
@@ -40,10 +36,12 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 	
 	public void actionPerformed(ActionEvent evt){
 		//DATA Receiving 
-		//Network Code: Receive Data
+		//Network Code: Receive Data, input into proper variables, send to graphics panel to draw
 		if(evt.getSource() == ssm){
 			String strData;
 			strData = ssm.readText();
+			String[] receivedData = strData.split(",");
+			
 		}
 		//60 FPS Repaint
 		if(evt.getSource() == thetimer){ // If timer is triggered, it will repaint.
@@ -91,16 +89,6 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 		ssm.sendText(finalSentData);
 		System.out.println(finalSentData);
 	}
-	//Mouse Location
-	public void mouseMoved(MouseEvent evt){
-		mouseX = Integer.toString(evt.getX()); 
-		mouseY = Integer.toString(evt.getY()); 
-		mouseX = mouseX + ",";
-		mouseY = mouseY + ",";
-		finalSentData = finalSentData + sentMvmtInput + ifShot + mouseX + mouseY;
-		ssm.sendText(finalSentData);
-		System.out.println(finalSentData);
-	}
 	//Shots fired
 	public void mouseClicked(MouseEvent e){
 		ifShot = "Shott,";
@@ -109,6 +97,17 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 		System.out.println(finalSentData);
 		ifShot = "Shotf,";
 	}
+	//Mouse Location
+	public void mouseMoved(MouseEvent evt){
+		mouseX = Integer.toString(evt.getX()); 
+		mouseY = Integer.toString(evt.getY()); 
+		mouseX = mouseX + ",";
+		mouseY = mouseY + "";
+		finalSentData = finalSentData + sentMvmtInput + ifShot + mouseX + mouseY;
+		ssm.sendText(finalSentData);
+		System.out.println(finalSentData);
+	}
+	
 	
 	//OVERRIDE
 	public void keyTyped(KeyEvent e){
@@ -137,7 +136,7 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 	
 	//Constructor
 	public TankClient(){
-		theframe = new JFrame("Animation With Keyboard And Mouse");
+		theframe = new JFrame("TankClient");
 		thepanel = new TankClientPanel();
 		thepanel.setLayout(null);
 		thepanel.setPreferredSize(new Dimension(1290, 720));
