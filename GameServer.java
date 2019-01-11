@@ -26,49 +26,54 @@ public class GameServer implements ActionListener{
 			//when data arrives, check it for variables
 			String data = ssm.readText();
 			System.out.println("Recieved data from client: "+data);
-			ssm.sendText(data);
+			
+			//Split client data
+			//Apply Calculation
+			String strCData;
+			boolean blnUp;
+			boolean blnLeft;
+			boolean blnDown;
+			boolean blnRight;
+			
+			strCData = ssm.readText();
+			String[] splitData = strCData.split(",");
+			//Check client IP
+			if(splitData[0] == ssm.getMyAddress()){
+				if(splitData[1] == "MvmtUt"){
+					blnUp = true;
+				}else if(splitData[1] == "MvmtUf"){
+					blnUp = false;
+				}if(splitData[2] == "MvmtLt"){
+					blnLeft = true;
+				}else if(splitData[2] == "MvmtLf"){
+					blnLeft = false;
+				}if(splitData[3] == "MvmtDt"){
+					blnDown = true;
+				}else if(splitData[3] == "MvmtDf"){
+					blnDown = false;
+				}if(splitData[4] == "MvmtRt"){
+					blnRight = true;
+				}else if(splitData[4] == "MvmtRf"){
+					blnRight = false;
+				}if(splitData[5] == "Shott"){
+					System.out.println("Shot Fired");
+				}else if(splitData[5] == "Shotf"){
+					System.out.println("Shot Not Fired");
+				}if(splitData[6].substring(0,2) == "mX"){
+					System.out.println("Mouse X:" + splitData[6].substring(2,splitData.length));
+				}if(splitData[7].substring(0,2) == "mY"){
+					System.out.println("Mouse Y:" + splitData[6].substring(2,splitData.length));
+				}
+			}
 		}
 
 		if(e.getSource() == timer){
 			//use vars here, calculate movement and send to clients
-			//Split client data
-			//Apply Calculation
-			String strCData;
-			int intUp;
-			int intLeft;
-			int intDown;
-			int intRight;
+			//for example, if blnUp is true, move up
 			
-			strCData = ssm.readText();
-			String[] clientData = strCData.split(",");
-			//Check client IP
-			if(strCData[0] == getMyAddress){
-				if(strCData[1] == "MvmtUt"){
-					intUp = intUp + 10;
-				}else if(strCData[1] == "MvmtUf"){
-					intUp = intUp;
-				}if(strCData[2] == "MvmtLt"){
-					intLeft = intLeft + 10;
-				}else if(strCData[2] == "MvmtLf"){
-					intLeft = intLeft;
-				}if(strCData[3] == "MvmtDt"){
-					intDown = intDown + 10;
-				}else if(strCData[3] == "MvmtDf"){
-					intDown = intDown;
-				}if(strCData[4] == "MvmtRt"){
-					intRight = intRight + 10;
-				}else if(strCData[4] == "MvmtRf"){
-					intRight = intRight;
-				}if(strCData[5] == "Shott"){
-					System.out.println("Shot Fired");
-				}else if(strCData[5] == "Shotf"){
-					System.out.println("Shot Not Fired");
-				}if(strCData[6] == mouseX){
-					System.out.println("Turret Angled X Coordinate");
-				}if(strCData[7] == mouseY){
-					System.out.println("Turret Angled Y Coordinate");
-				}
-			}
+			//fill this with map values
+			String mapData = "map goes here";
+			ssm.sendText(mapData);
 		}
 	}
 
