@@ -72,7 +72,7 @@ public class GameServer implements ActionListener{
 			//for example, if blnUp is true, move up
 			
 			//fill this with map values
-			String mapData = "map goes here";
+			String mapData = "TankMap.txt";
 			ssm.sendText(mapData);
 		}
 	}
