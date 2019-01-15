@@ -1,23 +1,27 @@
-import java.io.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
-//These 'Run' files will be combined at the end, and will allow to person to choose Server or Client. separate for testing
-
-
-
-
-public class RUN_GAME{
-	public static void main (String args[]) throws IOException{
-		
-		//replace this with a menu panel, use it to get 'choice' variable
-		System.out.println("Server(s) or Client(c):");
-		BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-		String choice = keyboard.readLine();
-
-		if(choice.equals("c")){
+public class RUN_GAME implements ActionListener{
+	// Properties
+	JFrame theframe;
+	JPanel thepanel;
+	JButton theClientButton;
+	JButton theServerButton;
+	JLabel thelabel;
+	
+	
+	
+	// Methods
+	public void actionPerformed(ActionEvent evt){ 
+		if(evt.getSource() == theClientButton){ 
+			thepanel.repaint();
+			thepanel.setVisible(false);
 			System.out.println("Starting a client");
-		
 			new GameClient();
-		} else {
+		}
+		else if(evt.getSource() == theServerButton){ 
+			thepanel.repaint();
 			System.out.println("starting a server");
 			ServerThread sT = new ServerThread();
 			Thread sThread = new Thread(sT);
@@ -25,6 +29,27 @@ public class RUN_GAME{
 		
 			new GameClient();
 		}
+	}
+	
+	
+	public RUN_GAME(){
+		theframe = new JFrame("Tank Game");
+		thepanel = new JPanel();
+		thepanel.setPreferredSize(new Dimension(1280, 720));
+		thepanel.setLayout(null);
+		theClientButton = new JButton("Client");
+		theClientButton.setLocation(320, 150);
+		theClientButton.addActionListener(this);
+		theServerButton = new JButton("Client");
+		theServerButton.setLocation(620, 150);
+		theServerButton.addActionListener(this);
+		thelabel = new JLabel("Server or Client");
+		thelabel.setLocation(450, 600);
+	}
+	
+	
+	public static void main (String args[]){
+		
 		
 	}
 }
