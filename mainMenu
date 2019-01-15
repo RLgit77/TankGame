@@ -1,0 +1,60 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class mainMenu implements ActionListener{
+	// Properties
+	JFrame frame;
+	JPanel panel;
+	JButton play;
+	JButton help;
+	
+	// Methods
+	public void actionPerformed(ActionEvent e){
+		if(e.getSource() == play){
+			System.out.println("Running Game");
+		}else if(e.getSource() == help){
+			System.out.println("Initializing Tutorial");
+		}
+	}
+			
+	
+	// Constructors
+	public mainMenu(){
+		frame = new JFrame("Tanks");
+		panel = new JPanel();
+		panel.setPreferredSize(new Dimension(1280, 720));
+		panel.setLayout(null);
+		play = new JButton("Play Game");
+		help = new JButton("Help");
+		play.setSize(320, 80);
+		help.setSize(320, 80);
+		play.setLocation(480, 300);
+		help.setLocation(480, 450);
+		
+		play.setBorderPainted(true);
+		play.setFocusPainted(false);
+		play.setContentAreaFilled(false);
+		
+		help.setBorderPainted(true);
+		help.setFocusPainted(false);
+		help.setContentAreaFilled(false);
+		
+		panel.add(play);
+		panel.add(help);
+		
+		play.addActionListener(this);
+		help.addActionListener(this);
+
+		
+		frame.setContentPane(panel);
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		
+	}
+	// Main Method
+	public static void main(String[] args){
+		mainMenu mm = new mainMenu();
+	}
+}
