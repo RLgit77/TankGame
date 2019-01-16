@@ -13,44 +13,54 @@ public class RUN_GAME implements ActionListener{
 	
 	
 	// Methods
-	public void actionPerformed(ActionEvent evt){ 
+	public void actionPerformed(ActionEvent evt){
 		if(evt.getSource() == theClientButton){ 
-			thepanel.repaint();
-			thepanel.setVisible(false);
 			System.out.println("Starting a client");
 			new GameClient();
+			theframe.setState(Frame.ICONIFIED);
 		}
 		else if(evt.getSource() == theServerButton){ 
 			thepanel.repaint();
-			System.out.println("starting a server");
+			System.out.println("Starting a server");
 			ServerThread sT = new ServerThread();
 			Thread sThread = new Thread(sT);
 			sThread.start();
-		
 			new GameClient();
+			theframe.setState(Frame.ICONIFIED);
 		}
 	}
 	
 	
+	//Constructor
 	public RUN_GAME(){
-		theframe = new JFrame("Tank Game");
-		thepanel = new JPanel();
-		thepanel.setPreferredSize(new Dimension(1280, 720));
-		thepanel.setLayout(null);
-		theClientButton = new JButton("Client");
-		theClientButton.setLocation(320, 150);
-		theClientButton.addActionListener(this);
-		theServerButton = new JButton("Client");
-		theServerButton.setLocation(620, 150);
-		theServerButton.addActionListener(this);
-		thelabel = new JLabel("Server or Client");
-		thelabel.setLocation(450, 600);
+		  theframe = new JFrame("Choose Client or Server for Tank Game");
+		  thepanel = new JPanel();
+		  thepanel.setPreferredSize(new Dimension(400, 200));
+		  thepanel.setLayout(null);
+		  
+		  
+		  theClientButton = new JButton("Click to run Client");
+		  theServerButton = new JButton("Click to run Server");
+		  theClientButton.setSize(300, 50);
+		  theServerButton.setSize(300, 50);
+		  theClientButton.addActionListener(this);
+		  theServerButton.addActionListener(this);
+		  theClientButton.setLocation(50, 50);
+		  theServerButton.setLocation(50, 100);
+		  
+		  thepanel.add(theClientButton);
+		  thepanel.add(theServerButton);
+		  theframe.setContentPane(thepanel);
+		  theframe.pack();
+		  theframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		  theframe.setVisible(true);
+		
 	}
 	
-	
-	public static void main (String args[]){
-		
-		
+	// Main Method
+	public static void main(String[] args){
+		new RUN_GAME();
 	}
 }
+
 
