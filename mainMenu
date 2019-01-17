@@ -25,7 +25,7 @@ public class mainMenu implements ActionListener{
 			back.setVisible(true);
 			System.out.println("Initializing Help");				
 		}else if(e.getSource() == back){
-			panel.blnMM = false;
+			panel.blnMM = true;
 			play.setVisible(true);
 			help.setVisible(true);
 			back.setVisible(false);
@@ -53,15 +53,15 @@ public class mainMenu implements ActionListener{
 		help.setLocation(480, 450);
 		back.setLocation(920, 620);
 		
-		play.setBorderPainted(false);
+		play.setBorderPainted(true);
 		play.setContentAreaFilled(false);
 		play.setOpaque(false);
 		
-		help.setBorderPainted(false);
+		help.setBorderPainted(true);
 		help.setContentAreaFilled(false);
 		help.setOpaque(false);
 		
-		back.setBorderPainted(false);
+		back.setBorderPainted(true);
 		back.setContentAreaFilled(false);
 		back.setOpaque(false);
 		
