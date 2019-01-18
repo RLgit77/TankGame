@@ -45,28 +45,17 @@ public class mainMenu implements ActionListener{
 		play = new JButton();
 		help = new JButton();
 		back = new JButton();
-		play.setSize(320, 80);
-		help.setSize(320, 80);
-		back.setSize(320, 80);
+		play.setSize(300, 200);
+		help.setSize(120, 120);
+		back.setSize(100, 100);
 		
-		play.setLocation(480, 300);
-		help.setLocation(480, 450);
-		back.setLocation(920, 620);
+		play.setLocation(490, 260);
+		help.setLocation(95, 590);
+		back.setLocation(100, 620);
 		
-		play.setOpaque(false);
-		play.setContentAreaFilled(false);
-		play.setBorderPainted(true);
-		//play.setFocusPainted(false);
+		play.setBorder(null);
 		
-		
-		
-		help.setFocusPainted(false);
-		help.setContentAreaFilled(false);
-		help.setOpaque(false);
-		
-		back.setFocusPainted(false);
-		back.setContentAreaFilled(false);
-		back.setOpaque(false);
+		help.setBorder(null);
 		
 		panel.add(play);
 		panel.add(help);
@@ -93,6 +82,7 @@ public class mainMenu implements ActionListener{
 	}
 }
 	
+
 
 
 
