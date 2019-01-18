@@ -18,6 +18,17 @@ public class GamePanel extends JPanel{
 	int p2y=100;
 	int p3y=100;
 	
+	int numberOfBullets = 0;
+	int cooldown = 0;
+	double[] bulletAngle = new double[100000];
+	int[] flip = new int[100000];
+	double[] bulletDistance = new double[100000];
+	int[] bulletLaunchX = new int[100000];
+	int[] bulletLaunchY = new int[100000];
+	double[] bulletX = new double[100000];
+	double[] bulletY = new double[100000];
+	double[] bulletSpeed = new double[100000];
+	int[] bulletSize = new int[100000];
 	
 	//input variables
 	int playerNumber = 4;										//start with one player
@@ -84,7 +95,6 @@ public class GamePanel extends JPanel{
 			}
 			
 			
-			//use mouse inputs
 
 		}
 			
@@ -95,7 +105,27 @@ public class GamePanel extends JPanel{
 		
 			if(clicked[i]){
 				g.drawLine((int)playerX[i],(int)playerY[i],mouseX[i],mouseY[i]);
+				
+				bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]));
+				bulletDistance[numberOfBullets] = 0;
+				bulletLaunchX[numberOfBullets] = (int)playerX[i];
+				bulletLaunchY[numberOfBullets] = (int)playerY[i];
+				bulletX[numberOfBullets] = (int)playerX[i];
+				bulletY[numberOfBullets] = (int)playerY[i];
+				bulletSpeed[numberOfBullets] = 1;
+				bulletSize[numberOfBullets] = 5;
+				
+				//fix trig math
+				if(mouseX[i] < playerX[i]){
+					flip[numberOfBullets] = 1;
+				} else {
+					flip[numberOfBullets] = 0;
+				}		
+				
+				clicked[i] = false;
+				numberOfBullets++;
 			}
+			
 			//rotate graphics
 			//Graphics2D g2d = (Graphics2D)g;
 	        //AffineTransform old = g2d.getTransform();
@@ -107,6 +137,25 @@ public class GamePanel extends JPanel{
 	        //reset rotation for other draw0ngs
 	        //g2d.setTransform(old);
 			
+		}
+		
+		//for loop for all bullets movements/drawing
+		for(int i = 0; i < numberOfBullets; i++){
+						
+			bulletX[i] = (Math.cos(bulletAngle[i])*bulletDistance[i]);
+			bulletY[i] = (Math.sin(bulletAngle[i])*bulletDistance[i]);
+			
+			if(flip[i] == 1){
+				bulletX[i] = bulletX[i]*-1;
+				bulletY[i] = bulletY[i]*-1;
+			}
+			
+			bulletX[i] = bulletLaunchX[i]+bulletX[i];
+			bulletY[i] = bulletLaunchY[i]+bulletY[i];
+			
+			bulletDistance[i] = bulletDistance[i]+bulletSpeed[i];
+			
+			g.drawOval((int)bulletX[i]-bulletSize[i],(int)bulletY[i]-bulletSize[i],bulletSize[i],bulletSize[i]);
 		}
 		
 	}
