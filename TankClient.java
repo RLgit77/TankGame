@@ -27,6 +27,10 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 	String UserIP = "";
 	Timer thetimer;
 	
+	boolean blnDown = false;
+	boolean blnUp = false;
+	boolean blnLeft = false;
+	boolean blnRight = false;
 	
 
 	//-----------------------------------------------------------------METHODS-----------------------------------------------------------------//
@@ -52,10 +56,11 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 	public void keyPressed(KeyEvent evt){ 
 		if(evt.getKeyCode() == 87){ // W Key
 			MvmtU = "MvmtUt,";
+			//sentMvmtInput = MvmtU;
 		}
 		else if(evt.getKeyCode() == 65){ // A Key
 			MvmtL = "MvmtLt,";
-		}
+		}	
 		else if(evt.getKeyCode() == 83){ // S Key
 			MvmtD = "MvmtDt,";
 		}
@@ -63,13 +68,11 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 			MvmtR = "MvmtRt,";
 		}
 		
-		if(SendMvmt == true){
-			sentMvmtInput = MvmtU + MvmtL + MvmtD + MvmtR;
-			UserIP = ssm.getMyAddress();
-			finalSentData = UserIP +","+ sentMvmtInput + ifShot + mouseX + mouseY;
-			ssm.sendText(finalSentData);
-			System.out.println(finalSentData);
-		}
+		
+		sentMvmtInput = MvmtU + MvmtL + MvmtD + MvmtR;
+		finalSentData = UserIP +","+ sentMvmtInput + ifShot + mouseX + mouseY;
+		ssm.sendText(finalSentData);
+		System.out.println(finalSentData);
 	}
 	
 	public void keyReleased(KeyEvent evt){ 
@@ -92,12 +95,14 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 		System.out.println(finalSentData);
 	}
 	//Shots fired
+	//Initializes sent ip when first clicked
 	public void mouseClicked(MouseEvent e){
 		ifShot = "Shott,";
-		finalSentData = finalSentData + sentMvmtInput + ifShot + mouseX + mouseY;
+		finalSentData = finalSentData + UserIP + sentMvmtInput + ifShot + mouseX + mouseY;
 		ssm.sendText(finalSentData);
 		System.out.println(finalSentData);
 		ifShot = "Shotf,";
+		UserIP = ssm.getMyAddress();
 	}
 	//Mouse Location
 	public void mouseMoved(MouseEvent evt){
@@ -105,7 +110,7 @@ public class TankClient implements ActionListener, KeyListener, MouseMotionListe
 		mouseY = Integer.toString(evt.getY()); 
 		mouseX = mouseX + ",";
 		mouseY = mouseY + "";
-		finalSentData = finalSentData + sentMvmtInput + ifShot + mouseX + mouseY;
+		finalSentData = finalSentData + UserIP + sentMvmtInput + ifShot + mouseX + mouseY;
 		ssm.sendText(finalSentData);
 		System.out.println(finalSentData);
 	}
