@@ -18,6 +18,17 @@ public class GamePanel extends JPanel{
 	int p2y=100;
 	int p3y=100;
 	
+	int numberOfBullets = 0;
+	int cooldown = 0;
+	double[] bulletAngle = new double[100000];
+	int[] flip = new int[100000];
+	double[] bulletDistance = new double[100000];
+	int[] bulletLaunchX = new int[100000];
+	int[] bulletLaunchY = new int[100000];
+	double[] bulletX = new double[100000];
+	double[] bulletY = new double[100000];
+	double[] bulletSpeed = new double[100000];
+	int[] bulletSize = new int[100000];
 	
 	//input variables
 	int playerNumber = 4;										//start with one player
@@ -84,7 +95,6 @@ public class GamePanel extends JPanel{
 			}
 			
 			
-			//use mouse inputs
 
 		}
 			
@@ -95,7 +105,27 @@ public class GamePanel extends JPanel{
 		
 			if(clicked[i]){
 				g.drawLine((int)playerX[i],(int)playerY[i],mouseX[i],mouseY[i]);
+				
+				bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]));
+				bulletLaunchX[numberOfBullets] = (int)playerX[i];
+				bulletLaunchY[numberOfBullets] = (int)playerY[i];
+				bulletX[numberOfBullets] = (int)playerX[i];
+				bulletY[numberOfBullets] = (int)playerY[i];
+				bulletSpeed[numberOfBullets] = 1;
+				bulletSize[numberOfBullets] = 5;
+				bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+20; //more than player size + bullet size
+				
+				//fix trig math
+				if(mouseX[i] < playerX[i]){
+					flip[numberOfBullets] = 1;
+				} else {
+					flip[numberOfBullets] = 0;
+				}		
+				
+				clicked[i] = false;
+				numberOfBullets++;
 			}
+			
 			//rotate graphics
 			//Graphics2D g2d = (Graphics2D)g;
 	        //AffineTransform old = g2d.getTransform();
@@ -106,6 +136,36 @@ public class GamePanel extends JPanel{
 			g.setColor(Color.BLACK);
 	        //reset rotation for other draw0ngs
 	        //g2d.setTransform(old);
+			
+		}
+		
+		//for loop for all bullets movements/drawing
+		for(int i = 0; i < numberOfBullets; i++){										//too many bullets causes lag -> make i start at 'removedbullet' instead of 0, removed++ whenever one leaves the game, also limit the amount per player
+						
+			bulletX[i] = (Math.cos(bulletAngle[i])*bulletDistance[i]);
+			bulletY[i] = (Math.sin(bulletAngle[i])*bulletDistance[i]);
+			
+			if(flip[i] == 1){
+				bulletX[i] = bulletX[i]*-1;
+				bulletY[i] = bulletY[i]*-1;
+			}
+			
+			bulletX[i] = bulletLaunchX[i]+bulletX[i];
+			bulletY[i] = bulletLaunchY[i]+bulletY[i];
+			
+			bulletDistance[i] = bulletDistance[i]+bulletSpeed[i];
+			
+			g.drawOval((int)bulletX[i]-bulletSize[i],(int)bulletY[i]-bulletSize[i],bulletSize[i],bulletSize[i]);
+			
+			//check collisions with players
+			for(int p = 0; p<playerNumber; p++){
+				if( ((bulletX[i]+bulletSize[i]) > (playerX[p]-10)) && ((bulletX[i]-bulletSize[i]) < (playerX[p]+10)) && ((bulletY[i]+bulletSize[i]) > (playerY[p]-10)) && ((bulletY[i]-bulletSize[i]) < (playerY[p]+10)) ){
+					g.fillRect((int)playerX[p]-15,(int)playerY[p]-15,30,30);
+					//reset position when dead, do other stuff here
+					playerX[p] = 100+p*50;	//just so they spawn differently
+					playerY[p] = 100;
+				}
+			}
 			
 		}
 		
