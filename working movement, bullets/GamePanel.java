@@ -107,13 +107,13 @@ public class GamePanel extends JPanel{
 				g.drawLine((int)playerX[i],(int)playerY[i],mouseX[i],mouseY[i]);
 				
 				bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]));
-				bulletDistance[numberOfBullets] = 0;
 				bulletLaunchX[numberOfBullets] = (int)playerX[i];
 				bulletLaunchY[numberOfBullets] = (int)playerY[i];
 				bulletX[numberOfBullets] = (int)playerX[i];
 				bulletY[numberOfBullets] = (int)playerY[i];
 				bulletSpeed[numberOfBullets] = 1;
 				bulletSize[numberOfBullets] = 5;
+				bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+20; //more than player size + bullet size
 				
 				//fix trig math
 				if(mouseX[i] < playerX[i]){
@@ -140,7 +140,7 @@ public class GamePanel extends JPanel{
 		}
 		
 		//for loop for all bullets movements/drawing
-		for(int i = 0; i < numberOfBullets; i++){
+		for(int i = 0; i < numberOfBullets; i++){										//too many bullets causes lag -> make i start at 'removedbullet' instead of 0, removed++ whenever one leaves the game, also limit the amount per player
 						
 			bulletX[i] = (Math.cos(bulletAngle[i])*bulletDistance[i]);
 			bulletY[i] = (Math.sin(bulletAngle[i])*bulletDistance[i]);
@@ -156,6 +156,17 @@ public class GamePanel extends JPanel{
 			bulletDistance[i] = bulletDistance[i]+bulletSpeed[i];
 			
 			g.drawOval((int)bulletX[i]-bulletSize[i],(int)bulletY[i]-bulletSize[i],bulletSize[i],bulletSize[i]);
+			
+			//check collisions with players
+			for(int p = 0; p<playerNumber; p++){
+				if( ((bulletX[i]+bulletSize[i]) > (playerX[p]-10)) && ((bulletX[i]-bulletSize[i]) < (playerX[p]+10)) && ((bulletY[i]+bulletSize[i]) > (playerY[p]-10)) && ((bulletY[i]-bulletSize[i]) < (playerY[p]+10)) ){
+					g.fillRect((int)playerX[p]-15,(int)playerY[p]-15,30,30);
+					//reset position when dead, do other stuff here
+					playerX[p] = 100+p*50;	//just so they spawn differently
+					playerY[p] = 100;
+				}
+			}
+			
 		}
 		
 	}
