@@ -16,7 +16,7 @@ public class RUN_GAME implements ActionListener{
 	public void actionPerformed(ActionEvent evt){
 		if(evt.getSource() == theClientButton){ 
 			System.out.println("Starting a client");
-			new GameClient();
+			new mainMenu();
 			theframe.setState(Frame.ICONIFIED);
 		}
 		else if(evt.getSource() == theServerButton){ 
@@ -25,7 +25,7 @@ public class RUN_GAME implements ActionListener{
 			ServerThread sT = new ServerThread();
 			Thread sThread = new Thread(sT);
 			sThread.start();
-			new GameClient();
+			new mainMenu();
 			theframe.setState(Frame.ICONIFIED);
 		}
 	}
