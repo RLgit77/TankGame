@@ -8,6 +8,11 @@ public class GamePanel extends JPanel{
 	
 	//---------------------------------------------------------------PROPERTIES----------------------------------------------------------------//
 	
+	//for centering player
+	int ClientPlayer =  -1;
+	int xShift = 0;
+	int yShift = 0;
+	
 	//original map values (just used below in map array - make random? all randomness must be server side)
 	int p0x=640;
 	int p1x=100;
@@ -19,6 +24,8 @@ public class GamePanel extends JPanel{
 	int p3y=100;
 	
 	//bullet values
+	boolean[] isRemoved = new boolean[100000];
+	{Arrays.fill(isRemoved, false);}
 	int numberOfBullets = 0;
 	int removedBullets = 0;
 	int cooldown = 0;
@@ -83,10 +90,25 @@ public class GamePanel extends JPanel{
 	
 	
 	public void paintComponent(Graphics g){
+		
+		//get shift to center player
+		if(ClientPlayer != -1){
+			xShift = 640 - (int)playerX[ClientPlayer];
+			yShift = 360 - (int)playerY[ClientPlayer];
+		}	
+		
 		//clear
 		g.setColor(Color.WHITE);
 		g.fillRect(0,0,1280,720);
-		g.setColor(Color.BLACK);				
+		g.setColor(Color.BLACK);
+		
+		//testing walls here									2432x1408
+		g.setColor(Color.RED);
+		g.fillRect(0+xShift,0+yShift,2432,128);
+		g.fillRect(0+xShift,0+yShift,128,1408);
+		g.fillRect(0+xShift,1408-128+yShift,2432,128);
+		g.fillRect(2432-128+xShift,0+yShift,128,1408);
+		g.setColor(Color.BLACK);			
 			
 		//----------------------------------------------------------------runs for every player----------------------------------------------------------------//
 		for(int i = 0; i<playerNumber; i++){
@@ -107,8 +129,6 @@ public class GamePanel extends JPanel{
 		
 			//mouse inputs
 			if(clicked[i]){
-				g.drawLine((int)playerX[i],(int)playerY[i],mouseX[i],mouseY[i]);
-				
 				bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]));
 				bulletLaunchX[numberOfBullets] = (int)playerX[i];
 				bulletLaunchY[numberOfBullets] = (int)playerY[i];
@@ -145,12 +165,12 @@ public class GamePanel extends JPanel{
 				//if placed mine is armed
 				if(mineTimer[i] > 60*5){	//5 seconds @ 60 frames/sec
 					g.setColor(Color.RED);
-					g.fillOval((int)mineX[i]-15,(int)mineY[i]-15,30,30);
+					g.fillOval((int)mineX[i]-15+xShift,(int)mineY[i]-15+yShift,30,30);
 					g.setColor(Color.BLACK);
 					//check collisions with all players
 					for(int p = 0; p<playerNumber; p++){
 						if( ((mineX[i]+15) > (playerX[p]-10)) && ((mineX[i]-15) < (playerX[p]+10)) && ((mineY[i]+15) > (playerY[p]-10)) && ((mineY[i]-15) < (playerY[p]+10)) ){
-							g.fillRect((int)playerX[p]-15,(int)playerY[p]-15,30,30);
+							g.fillRect((int)playerX[p]-15+xShift,(int)playerY[p]-15+yShift,30,30);
 							//reset position when dead, do other stuff here
 							playerX[p] = 100+p*50;	//just so they spawn differently
 							playerY[p] = 100;
@@ -161,60 +181,62 @@ public class GamePanel extends JPanel{
 					}
 				//placed, but unarmed
 				} else {	
-					g.fillOval((int)mineX[i]-15,(int)mineY[i]-15,30,30);
+					g.fillOval((int)mineX[i]-15+xShift,(int)mineY[i]-15+yShift,30,30);
 					mineTimer[i]++;
 				}	
 			}
 			
-			//	rotate graphics (use for turret in bullet firing)
+			//		rotate graphics (use for turret in bullet firing)
 			//Graphics2D g2d = (Graphics2D)g;
 	        //AffineTransform old = g2d.getTransform();
 	        //g2d.rotate(angle[i], playerX[i], playerY[i]);
 	        
 	        //					player
 	        g.setColor(Color.GREEN);
-			g.fillOval((int)playerX[i]-10,(int)playerY[i]-10,20,20);
+			g.fillOval((int)playerX[i]-10+xShift,(int)playerY[i]-10+yShift,20,20);
 			g.setColor(Color.BLACK);
 			
-	        //		reset rotation for other draw0ngs
+	        //		reset rotation for other drawings
 	        //g2d.setTransform(old);		
 		
 		}
 		
 		//----------------------------------------------------------------runs for every bullet----------------------------------------------------------------//
-		for(int i = removedBullets; i < numberOfBullets; i++){										//too many bullets causes lag -> make i start at 'removedbullet' instead of 0, removed++ whenever one leaves the game, also limit the amount per player
-						
-			bulletX[i] = (Math.cos(bulletAngle[i])*bulletDistance[i]);
-			bulletY[i] = (Math.sin(bulletAngle[i])*bulletDistance[i]);
-			
-			if(flip[i] == 1){
-				bulletX[i] = bulletX[i]*-1;
-				bulletY[i] = bulletY[i]*-1;
-			}
-			
-			bulletX[i] = bulletLaunchX[i]+bulletX[i];
-			bulletY[i] = bulletLaunchY[i]+bulletY[i];
-			
-			bulletDistance[i] = bulletDistance[i]+bulletSpeed[i];
-			if(bulletDistance[i] > 1470) { removedBullets++; }	//the furthest distance a bullet should ever travel, stop rendering it (1470 is diagonal across screen)
-			//set max bullet distance here if we want to limit it
-			
-			g.drawOval((int)bulletX[i]-bulletSize[i],(int)bulletY[i]-bulletSize[i],bulletSize[i],bulletSize[i]);
-			
-			
-			//check collisions with players
-			for(int p = 0; p<playerNumber; p++){
-				if(playerTimer[p] > 60*5){	//5 seconds @ 60 frames/sec
-					if( ((bulletX[i]+bulletSize[i]) > (playerX[p]-10)) && ((bulletX[i]-bulletSize[i]) < (playerX[p]+10)) && ((bulletY[i]+bulletSize[i]) > (playerY[p]-10)) && ((bulletY[i]-bulletSize[i]) < (playerY[p]+10)) ){
-						g.fillRect((int)playerX[p]-15,(int)playerY[p]-15,30,30);
-						//reset position when dead, do other stuff here
-						playerX[p] = 100+p*50;	//just so they spawn differently
-						playerY[p] = 100;
-						playerTimer[p]=0;
+		for(int i = removedBullets; i < numberOfBullets; i++){	//stops running for bullets off screen
+			if(isRemoved[i] == false){		//set to true if bullet hits someone or a wall
+				bulletX[i] = (Math.cos(bulletAngle[i])*bulletDistance[i]);
+				bulletY[i] = (Math.sin(bulletAngle[i])*bulletDistance[i]);
+				
+				if(flip[i] == 1){
+					bulletX[i] = bulletX[i]*-1;
+					bulletY[i] = bulletY[i]*-1;
+				}
+				
+				bulletX[i] = bulletLaunchX[i]+bulletX[i];
+				bulletY[i] = bulletLaunchY[i]+bulletY[i];
+				
+				bulletDistance[i] = bulletDistance[i]+bulletSpeed[i];
+				if(bulletDistance[i] > 2811) { removedBullets++; }	//the furthest distance a bullet should ever travel, stop rendering it (2811 is diagonal across screen)
+				//set max bullet distance here if we want to limit it
+				
+				g.drawOval((int)bulletX[i]-bulletSize[i]+xShift,(int)bulletY[i]-bulletSize[i]+yShift,bulletSize[i],bulletSize[i]);
+				
+				
+				//check collisions with players
+				for(int p = 0; p<playerNumber; p++){
+					if(playerTimer[p] > 60*5){	//5 seconds @ 60 frames/sec
+						if( ((bulletX[i]+bulletSize[i]) > (playerX[p]-10)) && ((bulletX[i]-bulletSize[i]) < (playerX[p]+10)) && ((bulletY[i]+bulletSize[i]) > (playerY[p]-10)) && ((bulletY[i]-bulletSize[i]) < (playerY[p]+10)) ){
+							g.fillRect((int)playerX[p]-15+xShift,(int)playerY[p]-15+yShift,30,30);
+							//reset position when dead, do other stuff here
+							playerX[p] = 100+p*50;	//just so they spawn differently
+							playerY[p] = 100;
+							playerTimer[p]=0;
+							isRemoved[i] = true;
+						}
+					} else {
+					//player just spawned
+					playerTimer[p]++;
 					}
-				} else {
-				//player just spawned
-				playerTimer[p]++;
 				}
 			}
 		}

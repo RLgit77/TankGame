@@ -40,9 +40,12 @@ public class GameServer implements ActionListener{
 				}else if(savedIPs[i].equals("empty")){
 					System.out.println("player "+i+" ip set, was "+savedIPs[i]);
 					savedIPs[i] = split[0];
+					//tell player what ID they are (just for centering panel, data is still formatted here)
+					ssm.sendText("playerID,"+split[0]+","+i);
 					//IP is set as player i
 					split[0] = i+"";
 					data = String.join(",", split);
+					
 					break;
 				}
 			}

@@ -14,7 +14,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 	Timer timer;
 	String RecievedData = "127.0.0.1,forward,f";	//default values (just false, so nothing happens)
 	String[] split;
-	//Boolean clicked = false;	//for combining mouse/motion listeners, not used yet
+	//Boolean clicked = false;	//for combining mouse/motion listeners, not used - bullets only fire on first click
 	String[] savedIPs = new String[4];
 	{Arrays.fill(savedIPs, "empty");}
 	Boolean isW = false;
@@ -27,7 +27,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 	
 	//get, set variables with client ID number given (from split[0] in next)
 	public void ParseAndSet(String[] split){
-		int ClientNumber = Integer.parseInt(split[1]);	//split 0 is server, split 1 is ID
+		int ClientNumber = Integer.parseInt(split[1]);	//split 0/1 are 'formatted'/the ID
 		for(int count = 2; count<split.length; count++){
 			//w
 			if(split[count].equals("forward")){
@@ -62,13 +62,13 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 					panel.moveRight[ClientNumber] = false;
 				}
 			//mouse clicked
-			} else if(split[count].equals("clicked")){		//format is IP,"clicked",t/f,mouseX,mouseY
+			} else if(split[count].equals("clicked")){		//format is IP,"clicked",mouseX,mouseY
 				panel.clicked[ClientNumber] = true;
 				count++;
 				panel.mouseX[ClientNumber] = Integer.parseInt(split[count]);
 				count++;
 				panel.mouseY[ClientNumber] = Integer.parseInt(split[count]);
-			} else if(split[count].equals("rightclicked")){
+			} else if(split[count].equals("spacebar")){
 				panel.rightclicked[ClientNumber] = true;
 			}
 			//end of variables
@@ -88,6 +88,8 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 				ParseAndSet(split);
 				System.out.println("Client received: "+RecievedData);
 				System.out.println("");
+			} else if (split[0].equals("playerID") && split[1].equals(IP)){
+				panel.ClientPlayer = Integer.parseInt(split[2]);
 			}
 			
 			
@@ -143,6 +145,9 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			ssm.sendText(IP+",right,f");
 			isD = false;
 		}
+		if(e.getKeyCode() == 32){
+			ssm.sendText(IP+",spacebar");
+		}
 	}
 	public void keyTyped(KeyEvent e){
 	}
@@ -154,10 +159,10 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 	public void mousePressed(MouseEvent e){
 		//right click
 		if(SwingUtilities.isRightMouseButton(e)){
-			ssm.sendText(IP+",rightclicked");
+			//do anything here?
 		} else {
 		//sends location as well
-		ssm.sendText(IP+",clicked,"+e.getX()+","+e.getY());
+		ssm.sendText(IP+",clicked,"+(e.getX()-panel.xShift)+","+(e.getY()-panel.yShift));
 		}
 	}
 	public void mouseClicked(MouseEvent e){	//after release
