@@ -48,7 +48,7 @@ public class GameServer implements ActionListener{
 			}
 			
 			//ADD "server," in front so it is used by clients
-			data = "server,"+data;
+			data = "formatted,"+data;
 			
 			ssm.sendText(data);
 			

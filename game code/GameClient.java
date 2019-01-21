@@ -63,16 +63,13 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 				}
 			//mouse clicked
 			} else if(split[count].equals("clicked")){		//format is IP,"clicked",t/f,mouseX,mouseY
+				panel.clicked[ClientNumber] = true;
 				count++;
-				if(split[count].equals("t")){
-					panel.clicked[ClientNumber] = true;
-					count++;
-					panel.mouseX[ClientNumber] = Integer.parseInt(split[count]);
-					count++;
-					panel.mouseY[ClientNumber] = Integer.parseInt(split[count]);
-				} else {
-					panel.clicked[ClientNumber] = false;
-				}
+				panel.mouseX[ClientNumber] = Integer.parseInt(split[count]);
+				count++;
+				panel.mouseY[ClientNumber] = Integer.parseInt(split[count]);
+			} else if(split[count].equals("rightclicked")){
+				panel.rightclicked[ClientNumber] = true;
 			}
 			//end of variables
 		}
@@ -87,7 +84,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			split = RecievedData.split(",");
 			
 			//only parse if from server
-			if(split[0].equals("server")){
+			if(split[0].equals("formatted")){
 				ParseAndSet(split);
 				System.out.println("Client received: "+RecievedData);
 				System.out.println("");
@@ -151,13 +148,17 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 	}
 	
 	//mouse
-	//format is IP,"clicked",t/f,mouseX,mouseY
+	//format is IP,"clicked",mouseX,mouseY	--> true or false not needed
 	public void mouseReleased(MouseEvent e){
-		ssm.sendText(IP+",clicked,f");
 	}
 	public void mousePressed(MouseEvent e){
-		//send location as well
-		ssm.sendText(IP+",clicked,t,"+e.getX()+","+e.getY());		
+		//right click
+		if(SwingUtilities.isRightMouseButton(e)){
+			ssm.sendText(IP+",rightclicked");
+		} else {
+		//sends location as well
+		ssm.sendText(IP+",clicked,"+e.getX()+","+e.getY());
+		}
 	}
 	public void mouseClicked(MouseEvent e){	//after release
 	}
