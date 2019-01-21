@@ -22,6 +22,7 @@ public class mainGameCode implements ActionListener{
 		if(e.getSource() == client){
 			// Insert code which leads to game client screen
 			System.out.println("Starting a client");
+			new GameClient();
 			// Disable Buttons
 			client.setVisible(false);
 			server.setVisible(false);
@@ -33,6 +34,10 @@ public class mainGameCode implements ActionListener{
 		}else if(e.getSource() == server){
 			// Insert code which leads to game server screen
 			System.out.println("Starting a server");
+			ServerThread sT = new ServerThread();
+			Thread sThread = new Thread(sT);
+			sThread.start();
+			new GameClient();
 			// Disable Buttons
 			client.setVisible(false);
 			server.setVisible(false);
