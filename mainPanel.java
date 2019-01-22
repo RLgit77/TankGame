@@ -12,9 +12,11 @@ public class mainPanel extends JPanel{
 	boolean blnMM = true;
 	boolean blnControls = false;
 	boolean blnPandT = false;
+	boolean blnClientConnect = false;
 	BufferedImage mainmenu;
 	BufferedImage control;
 	BufferedImage pandt;
+	BufferedImage client;
 	// Methods
 	public void paintComponent(Graphics g){
 		// Background
@@ -24,6 +26,8 @@ public class mainPanel extends JPanel{
 			g.drawImage(control, 0, 0, null);
 		}else if(blnPandT == true){
 			g.drawImage(pandt, 0, 0, null);
+		}else if(blnClientConnect == true){
+			g.drawImage(client, 0, 0, null);
 		}
 	}
 	// Constructors
@@ -33,6 +37,7 @@ public class mainPanel extends JPanel{
 			mainmenu = ImageIO.read(new File("Tank Menu.png"));
 			control = ImageIO.read(new File("Tank Controls.png"));
 			pandt = ImageIO.read(new File("Tank PandT.png"));
+			client = ImageIO.read(new File("Client Screen.png"));
 		}catch(IOException e){
 			System.out.println("Unable to load image");
 		}
