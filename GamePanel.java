@@ -228,22 +228,22 @@ public class GamePanel extends JPanel{
 			//use key inputs and check for wall
 			if(moveForwards[i]){
 				if(!map[(int) (playerX[i]/128.0)][(int) ((playerY[i]-30)/128.0)].equals("w")){
-					playerY[i] = playerY[i]-2;
+					playerY[i] = playerY[i]-3;
 				}
 			}
 			if(moveBack[i]){
 				if(!map[(int) (playerX[i]/128.0)][(int) ((playerY[i]+30)/128.0)].equals("w")){
-					playerY[i] = playerY[i]+2;
+					playerY[i] = playerY[i]+3;
 				}
 			}
 			if(moveLeft[i]){
 				if(!map[(int) ((playerX[i]-30)/128.0)][(int) (playerY[i]/128.0)].equals("w")){
-					playerX[i] = playerX[i]-2;
+					playerX[i] = playerX[i]-3;
 				}
 			}
 			if(moveRight[i]){
 				if(!map[(int) ((playerX[i]+30)/128.0)][(int) (playerY[i]/128.0)].equals("w")){
-					playerX[i] = playerX[i]+2;
+					playerX[i] = playerX[i]+3;
 				}
 			}
 			
@@ -277,7 +277,7 @@ public class GamePanel extends JPanel{
 						bulletLaunchY[numberOfBullets] = (int)playerY[i];
 						bulletX[numberOfBullets] = (int)playerX[i];
 						bulletY[numberOfBullets] = (int)playerY[i];
-						bulletSpeed[numberOfBullets] = 3;
+						bulletSpeed[numberOfBullets] = 5;
 						bulletSize[numberOfBullets] = 10;
 						bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30; //more than player size + bullet size
 						//fix trig math
@@ -292,9 +292,9 @@ public class GamePanel extends JPanel{
 						bulletType[numberOfBullets] = turretType[i];
 						if(turretType[i].equals("laser")){	//faster bullets, start further
 							bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30+numberFired*5;
-							bulletSpeed[numberOfBullets] = 8;
+							bulletSpeed[numberOfBullets] = 9;
 						} else if (turretType[i].equals("minigun")){
-							bulletSpeed[numberOfBullets] = 2;
+							bulletSpeed[numberOfBullets] = 4.5;
 							bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]))+(Math.random()*0.4-0.2);//shotgun should be in a +- 0.2 arc
 							bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30+numberFired*2;
 						}
