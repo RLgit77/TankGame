@@ -63,7 +63,7 @@ public class GamePanel extends JPanel{
 	BufferedImage armedMine;
 	BufferedImage bullet;
 	BufferedImage beam;
-	BufferedImage entireMap;//	<-----------------------------------------Replace this with the map
+	BufferedImage entireMap;
 	{
 		try {
 	    redTank = ImageIO.read(new File("Sprites/Tank Body Red.png"));
@@ -87,7 +87,7 @@ public class GamePanel extends JPanel{
 		armedMine = ImageIO.read(new File("Sprites/Landmine Body 2.png"));
 		bullet = ImageIO.read(new File("Sprites/Bullet.png"));
 		beam = ImageIO.read(new File("Sprites/Beam.png"));
-		entireMap = ImageIO.read(new File("Sprites/Minigun Powerup.png"));
+		entireMap = ImageIO.read(new File("Sprites/Hovertanks Map.png"));
 	    
 		} catch (IOException e) {
 			System.out.println("Image loading error: "+e);
