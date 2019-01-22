@@ -3,10 +3,75 @@ import java.awt.*;	//graphics
 import java.awt.geom.AffineTransform;	//rotate
 import java.util.Arrays;
 import java.io.*; // USE FOR MAP
+import java.awt.image.*;
+import javax.imageio.*;
 
 public class GamePanel extends JPanel{
 	
 	//---------------------------------------------------------------PROPERTIES----------------------------------------------------------------//
+	
+	//scoring
+	int[] shotBullet = new int[100000];
+	int[] score = new int[4];
+		
+	//drawing vars
+	String[] turretType = new String[4];
+	{Arrays.fill(turretType, "default");}
+	{
+		turretType[0] = "minigun";	//testing
+		turretType[1] = "laser";
+	}
+	
+	//images
+	BufferedImage redTank;
+	BufferedImage blueTank;
+	BufferedImage greenTank;
+	BufferedImage yellowTank;
+	BufferedImage defaultRed;
+	BufferedImage defaultBlue;
+	BufferedImage defaultGreen;
+	BufferedImage defaultYellow;
+	BufferedImage laserRed;
+	BufferedImage laserBlue;
+	BufferedImage laserGreen;
+	BufferedImage laserYellow;
+	BufferedImage miniRed;
+	BufferedImage miniBlue;
+	BufferedImage miniGreen;
+	BufferedImage miniYellow;
+	BufferedImage wall;
+	BufferedImage unarmedMine;
+	BufferedImage armedMine;
+	BufferedImage bullet;															//10x10 image
+	BufferedImage beam;
+	{
+		try {
+	    redTank = ImageIO.read(new File("Sprites/Tank Body Red.png"));
+	    blueTank = ImageIO.read(new File("Sprites/Tank Body Blue.png"));
+	    greenTank = ImageIO.read(new File("Sprites/Tank Body Green.png"));
+	    yellowTank = ImageIO.read(new File("Sprites/Tank Body Yellow.png"));
+		defaultRed = ImageIO.read(new File("Sprites/Default Red.png"));
+		defaultBlue = ImageIO.read(new File("Sprites/Default Blue.png"));
+		defaultGreen = ImageIO.read(new File("Sprites/Default Green.png"));
+		defaultYellow = ImageIO.read(new File("Sprites/Default Yellow.png"));
+		laserRed = ImageIO.read(new File("Sprites/Laser Red.png"));
+		laserBlue = ImageIO.read(new File("Sprites/Laser Blue.png"));
+		laserGreen = ImageIO.read(new File("Sprites/Laser Green.png"));
+		laserYellow = ImageIO.read(new File("Sprites/Laser Yellow.png"));
+		miniRed = ImageIO.read(new File("Sprites/Minigun Red.png"));
+		miniBlue = ImageIO.read(new File("Sprites/Minigun Blue.png"));
+		miniGreen = ImageIO.read(new File("Sprites/Minigun Green.png"));
+		miniYellow = ImageIO.read(new File("Sprites/Minigun Yellow.png"));
+		wall = ImageIO.read(new File("Sprites/Wall Tile.png"));
+		unarmedMine = ImageIO.read(new File("Sprites/Landmine Body.png"));
+		armedMine = ImageIO.read(new File("Sprites/Landmine Body 2.png"));
+		bullet = ImageIO.read(new File("Sprites/Bullet.png"));
+		beam = ImageIO.read(new File("Sprites/Beam.png"));
+	    
+		} catch (IOException e) {
+			System.out.println("Image loading error: "+e);
+		}
+	}
 	
 	//for centering player
 	int ClientPlayer =  -1;
@@ -15,13 +80,13 @@ public class GamePanel extends JPanel{
 	
 	//original map values (just used below in map array - make random? all randomness must be server side)
 	int p0x=640;
-	int p1x=100;
-	int p2x=200;
-	int p3x=300;
+	int p1x=300;
+	int p2x=400;
+	int p3x=500;
 	int p0y=360;
-	int p1y=100;
-	int p2y=100;
-	int p3y=100;
+	int p1y=400;
+	int p2y=400;
+	int p3y=400;
 	
 	//bullet values
 	boolean[] isRemoved = new boolean[100000];
@@ -38,6 +103,7 @@ public class GamePanel extends JPanel{
 	double[] bulletY = new double[100000];
 	double[] bulletSpeed = new double[100000];
 	int[] bulletSize = new int[100000];
+	String[] bulletType = new String[100000];
 	
 	//landmine values
 	boolean[] placedMine = new boolean[4];
@@ -45,10 +111,10 @@ public class GamePanel extends JPanel{
 	double[] mineY = new double[4];
 	int[] mineTimer = new int[4];
 	{
-	mineTimer[0] = 0;
-	mineTimer[1] = 0;
-	mineTimer[2] = 0;
-	mineTimer[3] = 0;
+		mineTimer[0] = 0;
+		mineTimer[1] = 0;
+		mineTimer[2] = 0;
+		mineTimer[3] = 0;
 	}
 	
 	//input variables
@@ -61,7 +127,7 @@ public class GamePanel extends JPanel{
 	int[] mouseX = new int[4];
 	int[] mouseY = new int[4];
 	boolean[] clicked = new boolean[4];
-	boolean[] rightclicked = new boolean[4];
+	boolean[] placeMine = new boolean[4];
 	
 	//player variables
 	double[] playerX = new double[4];
@@ -80,10 +146,10 @@ public class GamePanel extends JPanel{
 	}
 	int[] playerTimer = new int[4];	//for spawn protection
 	{
-	playerTimer[0] = 0;
-	playerTimer[1] = 0;
-	playerTimer[2] = 0;
-	playerTimer[3] = 0;
+		playerTimer[0] = 0;
+		playerTimer[1] = 0;
+		playerTimer[2] = 0;
+		playerTimer[3] = 0;
 	}
 	
 		//-----------------------------------------------------------------------METHODS-----------------------------------------------------------------------//
@@ -102,7 +168,7 @@ public class GamePanel extends JPanel{
 		g.fillRect(0,0,1280,720);
 		g.setColor(Color.BLACK);
 		
-		//testing walls here									2432x1408
+		//testing walls here (not the images)
 		g.setColor(Color.RED);
 		g.fillRect(0+xShift,0+yShift,2432,128);
 		g.fillRect(0+xShift,0+yShift,128,1408);
@@ -127,36 +193,68 @@ public class GamePanel extends JPanel{
 				playerX[i] = playerX[i]+2;
 			}
 		
-			//mouse inputs
+			//mouse input
 			if(clicked[i]){
-				bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]));
-				bulletLaunchX[numberOfBullets] = (int)playerX[i];
-				bulletLaunchY[numberOfBullets] = (int)playerY[i];
-				bulletX[numberOfBullets] = (int)playerX[i];
-				bulletY[numberOfBullets] = (int)playerY[i];
-				bulletSpeed[numberOfBullets] = 1;
-				bulletSize[numberOfBullets] = 5;
-				bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+20; //more than player size + bullet size
+				Boolean fireAnother = true; //for different gun types
+				int numberFired = 0;
 				
-				//fix trig math
-				if(mouseX[i] < playerX[i]){
-					flip[numberOfBullets] = 1;
-				} else {
-					flip[numberOfBullets] = 0;
-				}		
-				
-				clicked[i] = false;
-				numberOfBullets++;
-			}
+				while(fireAnother){ //stuff for one bullet, multiple times
+					shotBullet[numberOfBullets] = i;
+					bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]));
+					bulletLaunchX[numberOfBullets] = (int)playerX[i];
+					bulletLaunchY[numberOfBullets] = (int)playerY[i];
+					bulletX[numberOfBullets] = (int)playerX[i];
+					bulletY[numberOfBullets] = (int)playerY[i];
+					bulletSpeed[numberOfBullets] = 3;
+					bulletSize[numberOfBullets] = 10;
+					bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30; //more than player size + bullet size
+					//fix trig math
+					if(mouseX[i] < playerX[i]){
+						flip[numberOfBullets] = 1;
+						angle[i] = bulletAngle[numberOfBullets] - 1.57;	//half pi since all images are already rotated
+					} else {
+						flip[numberOfBullets] = 0;
+						angle[i] = bulletAngle[numberOfBullets] + 1.57;
+					}
+					//changes based in bullet type
+					bulletType[numberOfBullets] = turretType[i];
+					if(turretType[i].equals("laser")){	//faster bullets, start further
+						bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30+numberFired*5;
+						bulletSpeed[numberOfBullets] = 8;
+					} else if (turretType[i].equals("minigun")){
+						bulletSpeed[numberOfBullets] = 2;
+						bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]))+(Math.random()*0.4-0.2);//shotgun should be in a +- 0.2 arc
+						bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30+numberFired*2;
+					}
+					
+					//see if it should fire another bullet
+					if(turretType[i].equals("laser")){	//faster bullets, start further
+						if(numberFired > 15){
+							fireAnother = false;
+						}
+					} else if (turretType[i].equals("minigun")){
+						if(numberFired > 6){
+							fireAnother = false;
+						}
+					} else {
+						fireAnother = false;
+					}
+					
+					numberFired++;
+					numberOfBullets++;
+				}	//while fireAnother
+			}	//if clicked
+			
+			clicked[i] = false;
 			
 			//mouse right click
-			if(rightclicked[i]){
+			if(placeMine[i]){
 				
 				placedMine[i] = true;
 				mineX[i] = (int)playerX[i];
 				mineY[i] = (int)playerY[i];	
 				
-				rightclicked[i] = false;
+				placeMine[i] = false;
 			}
 			
 			//landmines
@@ -166,14 +264,15 @@ public class GamePanel extends JPanel{
 				if(mineTimer[i] > 60*5){	//5 seconds @ 60 frames/sec
 					g.setColor(Color.RED);
 					g.fillOval((int)mineX[i]-15+xShift,(int)mineY[i]-15+yShift,30,30);
+					g.drawImage(armedMine,(int)mineX[i]-16+xShift,(int)mineY[i]-16+yShift,32,32,null);
 					g.setColor(Color.BLACK);
 					//check collisions with all players
 					for(int p = 0; p<playerNumber; p++){
 						if( ((mineX[i]+15) > (playerX[p]-10)) && ((mineX[i]-15) < (playerX[p]+10)) && ((mineY[i]+15) > (playerY[p]-10)) && ((mineY[i]-15) < (playerY[p]+10)) ){
-							g.fillRect((int)playerX[p]-15+xShift,(int)playerY[p]-15+yShift,30,30);
+							g.fillRect((int)playerX[p]-15+xShift,(int)playerY[p]-15+yShift,30,30);		//explosion here
 							//reset position when dead, do other stuff here
-							playerX[p] = 100+p*50;	//just so they spawn differently
-							playerY[p] = 100;
+							playerX[p] = 300+p*50;	//just so they spawn differently
+							playerY[p] = 300;
 							
 							placedMine[i] = false;	//remove exploded mine
 							mineTimer[i] = 0;		//reset timer
@@ -181,23 +280,71 @@ public class GamePanel extends JPanel{
 					}
 				//placed, but unarmed
 				} else {	
-					g.fillOval((int)mineX[i]-15+xShift,(int)mineY[i]-15+yShift,30,30);
+					g.drawImage(unarmedMine,(int)mineX[i]-16+xShift,(int)mineY[i]-16+yShift,32,32,null);
 					mineTimer[i]++;
 				}	
 			}
 			
-			//		rotate graphics (use for turret in bullet firing)
-			//Graphics2D g2d = (Graphics2D)g;
-	        //AffineTransform old = g2d.getTransform();
-	        //g2d.rotate(angle[i], playerX[i], playerY[i]);
-	        
-	        //					player
-	        g.setColor(Color.GREEN);
-			g.fillOval((int)playerX[i]-10+xShift,(int)playerY[i]-10+yShift,20,20);
-			g.setColor(Color.BLACK);
 			
-	        //		reset rotation for other drawings
-	        //g2d.setTransform(old);		
+	        
+	        //tank body
+			
+			switch (i){
+				case 0: g.drawImage(redTank,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+					break;
+				case 1: g.drawImage(yellowTank,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+					break;
+				case 2: g.drawImage(greenTank,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+					break;
+				case 3: g.drawImage(blueTank,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+					break;
+			}
+			
+			//turret rotation
+			Graphics2D g2d = (Graphics2D)g;
+	        AffineTransform old = g2d.getTransform();
+	        g2d.rotate(angle[i], playerX[i]+xShift, playerY[i]+yShift);
+	        
+	        
+			if(turretType[i].equals("default")){
+				switch (i){
+					case 0: g.drawImage(defaultRed,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+					case 1: g.drawImage(defaultYellow,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+					case 2: g.drawImage(defaultGreen,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+					case 3: g.drawImage(defaultBlue,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+				}
+			} else if(turretType[i].equals("laser")){
+				switch (i){
+					case 0: g.drawImage(laserRed,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+					case 1: g.drawImage(laserYellow,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+					case 2: g.drawImage(laserGreen,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+					case 3: g.drawImage(laserBlue,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+				}
+			} else if(turretType[i].equals("minigun")){
+				switch (i){
+					case 0: g.drawImage(miniRed,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+					case 1: g.drawImage(miniYellow,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+					case 2: g.drawImage(miniGreen,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+					case 3: g.drawImage(miniBlue,(int)playerX[i]-64+xShift,(int)playerY[i]-64+yShift,128,128,null);
+						break;
+				}
+			}
+			
+			
+						
+	        //reset rotation for other drawings
+	        g2d.setTransform(old);		
 		
 		}
 		
@@ -219,7 +366,11 @@ public class GamePanel extends JPanel{
 				if(bulletDistance[i] > 2811) { removedBullets++; }	//the furthest distance a bullet should ever travel, stop rendering it (2811 is diagonal across screen)
 				//set max bullet distance here if we want to limit it
 				
-				g.drawOval((int)bulletX[i]-bulletSize[i]+xShift,(int)bulletY[i]-bulletSize[i]+yShift,bulletSize[i],bulletSize[i]);
+				if(bulletType[i].equals("laser")){
+					g.drawImage(beam,(int)bulletX[i]-bulletSize[i]+xShift,(int)bulletY[i]-bulletSize[i]+yShift,bulletSize[i],bulletSize[i],null);
+				} else {
+					g.drawImage(bullet,(int)bulletX[i]-bulletSize[i]+xShift,(int)bulletY[i]-bulletSize[i]+yShift,bulletSize[i],bulletSize[i],null);
+				}
 				
 				
 				//check collisions with players
@@ -228,10 +379,12 @@ public class GamePanel extends JPanel{
 						if( ((bulletX[i]+bulletSize[i]) > (playerX[p]-10)) && ((bulletX[i]-bulletSize[i]) < (playerX[p]+10)) && ((bulletY[i]+bulletSize[i]) > (playerY[p]-10)) && ((bulletY[i]-bulletSize[i]) < (playerY[p]+10)) ){
 							g.fillRect((int)playerX[p]-15+xShift,(int)playerY[p]-15+yShift,30,30);
 							//reset position when dead, do other stuff here
-							playerX[p] = 100+p*50;	//just so they spawn differently
-							playerY[p] = 100;
+							playerX[p] = 300+p*50;	//just so they spawn differently
+							playerY[p] = 300;
 							playerTimer[p]=0;
 							isRemoved[i] = true;
+							score[shotBullet[i]]++;
+							System.out.println("1 point for player "+(shotBullet[i]+1)+", score: "+score[shotBullet[i]]);	//scoring
 						}
 					} else {
 					//player just spawned

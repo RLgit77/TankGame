@@ -69,7 +69,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 				count++;
 				panel.mouseY[ClientNumber] = Integer.parseInt(split[count]);
 			} else if(split[count].equals("spacebar")){
-				panel.rightclicked[ClientNumber] = true;
+				panel.placeMine[ClientNumber] = true;
 			}
 			//end of variables
 		}
