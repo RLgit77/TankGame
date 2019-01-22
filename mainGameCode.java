@@ -39,7 +39,6 @@ public class mainGameCode implements ActionListener{
 			backtomenu.setVisible(false);
 			backtomenu2.setVisible(false);
 		
-			
 		}else if(e.getSource() == server){
 			// Insert code which leads to game server screen
 			System.out.println("Starting a server");
