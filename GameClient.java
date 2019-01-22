@@ -216,6 +216,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		//ChatBox
 		Font font = new Font("Helvetica", Font.PLAIN, 13);
         thearea = new JTextArea();
+        thearea.setEditable(false); 
         thearea.setFont(font);
         thearea.setForeground(Color.WHITE);
 		thearea.setOpaque(false);
