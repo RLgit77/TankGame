@@ -72,6 +72,7 @@ public class GamePanel extends JPanel{
 	BufferedImage explosion2;
 	BufferedImage explosion3;
 	BufferedImage hole;
+	BufferedImage fog;
 	{
 		try {
 	    redTank = ImageIO.read(new File("Sprites/Tank Body Red.png"));
@@ -100,6 +101,7 @@ public class GamePanel extends JPanel{
 		explosion2 = ImageIO.read(new File("Sprites/explosion2.png"));
 		explosion3 = ImageIO.read(new File("Sprites/explosion3.png"));
 		explosion3 = ImageIO.read(new File("Sprites/crater.png"));
+		fog = ImageIO.read(new File("Sprites/fog.png"));
 	    
 		} catch (IOException e) {
 			System.out.println("Image loading error: "+e);
@@ -509,6 +511,11 @@ public class GamePanel extends JPanel{
 				}
 			}
 		}
+		
+		//fog
+		g.drawImage(fog,0,-280,1280,1280,null);
+		
+		
 		
 		//show score
 		g.setColor(Color.WHITE);
