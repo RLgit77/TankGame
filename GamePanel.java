@@ -510,12 +510,41 @@ public class GamePanel extends JPanel{
 			}
 		}
 		
+		//show score
 		g.setColor(Color.WHITE);
 		g.drawString("Player 1: "+score[0], 1280-100, 100);
 		g.drawString("Player 2: "+score[1], 1280-100, 120);
 		g.drawString("Player 3: "+score[2], 1280-100, 140);
 		g.drawString("Player 4: "+score[3], 1280-100, 160);
 		g.setColor(Color.BLACK);
+		
+		
+		//game end
+		if(score[0] > 15){
+			g.setColor(Color.BLACK);
+			g.fillRect(0,0,1280,720);
+			g.setColor(Color.WHITE);
+			g.drawString("Player 1 wins!",1280/2-50,720/2-10);
+			//game end stuff
+		} else if(score[1] > 15){
+			g.setColor(Color.BLACK);
+			g.fillRect(0,0,1280,720);
+			g.setColor(Color.WHITE);
+			g.drawString("Player 2 wins!",1280/2-50,720/2-10);
+			//game end stuff
+		} else if(score[2] > 15){
+			g.setColor(Color.BLACK);
+			g.fillRect(0,0,1280,720);
+			g.setColor(Color.WHITE);
+			g.drawString("Player 3 wins!",1280/2-50,720/2-10);
+			//game end stuff
+		} else if(score[3] > 15){
+			g.setColor(Color.BLACK);
+			g.fillRect(0,0,1280,720);
+			g.setColor(Color.WHITE);
+			g.drawString("Player 4 wins!",1280/2-50,720/2-10);
+			//game end stuff
+		}
 		
 	}
 	
