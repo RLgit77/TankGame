@@ -10,6 +10,25 @@ public class GamePanel extends JPanel{
 	
 	//---------------------------------------------------------------PROPERTIES----------------------------------------------------------------//
 	
+	//map
+	String[][] map = new String [19][11];
+	{//load map from file
+		try{
+			BufferedReader data = new BufferedReader(new FileReader("TankMap.txt"));
+		
+			for (int y = 0; y < 11; y++){
+				String line = data.readLine();
+				String[] split = line.split(",");
+				for (int x = 0; x < 19; x++){
+					map[x][y] = split[x];
+				}
+			}
+			data.close();		
+		} catch (IOException e){
+			System.out.println("No map detected");
+		}
+	}
+	
 	//scoring
 	int[] shotBullet = new int[100000];
 	int[] score = new int[4];
@@ -42,8 +61,9 @@ public class GamePanel extends JPanel{
 	BufferedImage wall;
 	BufferedImage unarmedMine;
 	BufferedImage armedMine;
-	BufferedImage bullet;															//10x10 image
+	BufferedImage bullet;
 	BufferedImage beam;
+	BufferedImage entireMap;//	<-----------------------------------------Replace this with the map
 	{
 		try {
 	    redTank = ImageIO.read(new File("Sprites/Tank Body Red.png"));
@@ -67,6 +87,7 @@ public class GamePanel extends JPanel{
 		armedMine = ImageIO.read(new File("Sprites/Landmine Body 2.png"));
 		bullet = ImageIO.read(new File("Sprites/Bullet.png"));
 		beam = ImageIO.read(new File("Sprites/Beam.png"));
+		entireMap = ImageIO.read(new File("Sprites/Minigun Powerup.png"));
 	    
 		} catch (IOException e) {
 			System.out.println("Image loading error: "+e);
@@ -174,23 +195,33 @@ public class GamePanel extends JPanel{
 		g.fillRect(0+xShift,0+yShift,128,1408);
 		g.fillRect(0+xShift,1408-128+yShift,2432,128);
 		g.fillRect(2432-128+xShift,0+yShift,128,1408);
-		g.setColor(Color.BLACK);			
+		g.setColor(Color.BLACK);
+		
+		//draw map
+		g.drawImage(entireMap,xShift,yShift,2432,1408,null);	
 			
 		//----------------------------------------------------------------runs for every player----------------------------------------------------------------//
 		for(int i = 0; i<playerNumber; i++){
-			
-			//use key inputs
+			//use key inputs and check for wall
 			if(moveForwards[i]){
-				playerY[i] = playerY[i]-2;
+				if(!map[(int) (playerX[i]/128.0)][(int) ((playerY[i]-30)/128.0)].equals("w")){
+					playerY[i] = playerY[i]-2;
+				}
 			}
 			if(moveBack[i]){
-				playerY[i] = playerY[i]+2;
+				if(!map[(int) (playerX[i]/128.0)][(int) ((playerY[i]+30)/128.0)].equals("w")){
+					playerY[i] = playerY[i]+2;
+				}
 			}
 			if(moveLeft[i]){
-				playerX[i] = playerX[i]-2;
+				if(!map[(int) ((playerX[i]-30)/128.0)][(int) (playerY[i]/128.0)].equals("w")){
+					playerX[i] = playerX[i]-2;
+				}
 			}
 			if(moveRight[i]){
-				playerX[i] = playerX[i]+2;
+				if(!map[(int) ((playerX[i]+30)/128.0)][(int) (playerY[i]/128.0)].equals("w")){
+					playerX[i] = playerX[i]+2;
+				}
 			}
 		
 			//mouse input
