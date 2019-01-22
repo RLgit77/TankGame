@@ -28,6 +28,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 	JTextField thefield = new JTextField();
 	String strReceivedChat;
 	String strSentChat;
+	String ClientColour;
 	boolean blnSendText = true;
 	
 	//-----------------------------------------------------------------METHODS-----------------------------------------------------------------//
@@ -81,8 +82,17 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			} else if(split[count].equals("text")){		//format is IP,"clicked",mouseX,mouseY
 				count++;
 				strReceivedChat = split[count];
-				//Print to chatbox received texts
-				thearea.append(strReceivedChat + "\n");
+				//Print to chatbox received texts and who sent them
+				if(ClientNumber == 1){
+					ClientColour = "Red";
+				}else if(ClientNumber == 2){
+					ClientColour = "Yellow";
+				}else if(ClientNumber == 3){
+					ClientColour = "Green";
+				}else if(ClientNumber == 4){
+					ClientColour = "Blue";
+				}				
+				thearea.append(ClientColour+"  :  "+strReceivedChat + "\n");
 				//Autoscroll
 				thearea.setCaretPosition(thearea.getDocument().getLength());
 			}
@@ -111,7 +121,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		else if(e.getSource() == thefield){
 			if(blnSendText == true){
 			strSentChat = thefield.getText();
-			ssm.sendText(IP+",text,"+IP+" : "+strSentChat);
+			ssm.sendText(",text,"+strSentChat);
 			thefield.setText(" ");
 			frame.requestFocus();
 			}
@@ -224,13 +234,13 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		thescroll = new JScrollPane(thearea);
 		thescroll.getViewport().setOpaque(false);
 		thescroll.setOpaque(false);
-		thescroll.setSize(350, 200);
-		thescroll.setLocation(930, 485);
+		thescroll.setSize(330, 200);
+		thescroll.setLocation(950, 485);
 		panel.add(thescroll);
 		thefield = new JTextField();
 		thefield.setFont(font);
-		thefield.setSize(350, 35);
-		thefield.setLocation(930, 685);
+		thefield.setSize(330, 35);
+		thefield.setLocation(950, 685);
 		thefield.addActionListener(this);
 		panel.add(thefield);
 		
@@ -268,12 +278,13 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		thescroll = new JScrollPane(thearea);
 		thescroll.getViewport().setOpaque(false);
 		thescroll.setOpaque(false);
-		thescroll.setSize(350, 200);
-		thescroll.setLocation(930, 485);
+		thescroll.setSize(330, 200);
+		thescroll.setLocation(950, 485);
 		panel.add(thescroll);
 		thefield = new JTextField();
-		thefield.setSize(350, 35);
-		thefield.setLocation(930, 685);
+		thefield.setFont(font);
+		thefield.setSize(330, 35);
+		thefield.setLocation(950, 685);
 		thefield.addActionListener(this);
 		panel.add(thefield);
 

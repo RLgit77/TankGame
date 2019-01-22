@@ -527,10 +527,10 @@ public class GamePanel extends JPanel{
 		
 		//show score
 		g.setColor(Color.WHITE);
-		g.drawString("Player 1: "+score[0], 1280-100, 100);
-		g.drawString("Player 2: "+score[1], 1280-100, 120);
-		g.drawString("Player 3: "+score[2], 1280-100, 140);
-		g.drawString("Player 4: "+score[3], 1280-100, 160);
+		g.drawString("Red  :  "+score[0], 1280-100, 100);
+		g.drawString("Yellow  :  "+score[1], 1280-100, 120);
+		g.drawString("Green  :  "+score[2], 1280-100, 140);
+		g.drawString("Blue  :  "+score[3], 1280-100, 160);
 		g.setColor(Color.BLACK);
 		
 		
