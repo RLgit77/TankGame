@@ -250,52 +250,9 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		frame.setVisible(true);
 		
 		ssm = new SuperSocketMaster("127.0.0.1",1337, this);	//moved this to end - otherwise it begins before the server and doesn't connect
-		IP = ssm.getMyAddress();
+		IP = Math.random()+"";	//assigns a random ID to each client
 		ssm.connect();
 		ssm.sendText(IP+",up,f"); //send text to get server to assign this IP a player number
 		
-	}
-	
-	//debug (fake ip)
-	public GameClient(String fakeIP){
-		frame = new JFrame("Client");
-			frame.addKeyListener(this);
-		panel = new GamePanel();
-			panel.setPreferredSize(new Dimension(1280,720));
-			panel.addMouseMotionListener(this);
-			panel.addMouseListener(this);
-			panel.setLayout(null);
-		timer = new Timer(1000/60, this);
-			timer.start();
-
-		//ChatBox
-		Font font = new Font("Helvetica", Font.BOLD, 11);
-        thearea.setFont(font);
-        thearea.setForeground(Color.WHITE);
-		thearea = new JTextArea(); 
-		thearea.setOpaque(false);
-		thearea.setCaretPosition(thearea.getDocument().getLength());
-		thescroll = new JScrollPane(thearea);
-		thescroll.getViewport().setOpaque(false);
-		thescroll.setOpaque(false);
-		thescroll.setSize(330, 200);
-		thescroll.setLocation(950, 485);
-		panel.add(thescroll);
-		thefield = new JTextField();
-		thefield.setFont(font);
-		thefield.setSize(330, 35);
-		thefield.setLocation(950, 685);
-		thefield.addActionListener(this);
-		panel.add(thefield);
-
-		frame.setContentPane(panel);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-		
-		ssm = new SuperSocketMaster("127.0.0.1",1337, this);	//moved this to end - otherwise it begins before the server and doesn't connect
-		IP = fakeIP;
-		ssm.connect();
-		ssm.sendText(IP+",up,f"); //send text to get server to assign this IP a player number
 	}
 }
