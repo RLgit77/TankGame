@@ -63,7 +63,7 @@ public class GamePanel extends JPanel{
 	BufferedImage armedMine;
 	BufferedImage bullet;
 	BufferedImage beam;
-	BufferedImage entireMap;
+	BufferedImage entireMap;//	<-----------------------------------------Replace this with the map
 	{
 		try {
 	    redTank = ImageIO.read(new File("Sprites/Tank Body Red.png"));
@@ -185,16 +185,8 @@ public class GamePanel extends JPanel{
 		}	
 		
 		//clear
-		g.setColor(Color.WHITE);
-		g.fillRect(0,0,1280,720);
 		g.setColor(Color.BLACK);
-		
-		//testing walls here (not the images)
-		g.setColor(Color.RED);
-		g.fillRect(0+xShift,0+yShift,2432,128);
-		g.fillRect(0+xShift,0+yShift,128,1408);
-		g.fillRect(0+xShift,1408-128+yShift,2432,128);
-		g.fillRect(2432-128+xShift,0+yShift,128,1408);
+		g.fillRect(0,0,1280,720);
 		g.setColor(Color.BLACK);
 		
 		//draw map
@@ -280,12 +272,11 @@ public class GamePanel extends JPanel{
 			
 			//mouse right click
 			if(placeMine[i]){
-				
 				placedMine[i] = true;
 				mineX[i] = (int)playerX[i];
 				mineY[i] = (int)playerY[i];	
-				
 				placeMine[i] = false;
+				mineTimer[i] = 0;
 			}
 			
 			//landmines
@@ -382,6 +373,11 @@ public class GamePanel extends JPanel{
 		//----------------------------------------------------------------runs for every bullet----------------------------------------------------------------//
 		for(int i = removedBullets; i < numberOfBullets; i++){	//stops running for bullets off screen
 			if(isRemoved[i] == false){		//set to true if bullet hits someone or a wall
+				
+				if(map[(int) (bulletX[i]/128.0)][(int) (bulletY[i]/128.0)].equals("w")){
+					isRemoved[i] = true;
+				}
+				
 				bulletX[i] = (Math.cos(bulletAngle[i])*bulletDistance[i]);
 				bulletY[i] = (Math.sin(bulletAngle[i])*bulletDistance[i]);
 				
