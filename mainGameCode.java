@@ -200,7 +200,7 @@ public class mainGameCode implements ActionListener{
 		backtocontrols.setLocation(12, 590);
 		nexttopandt.setLocation(1144, 590);
 		backtomenu2.setLocation(1144, 590);
-		clientconnect.setLocation(910, 349);	
+		clientconnect.setLocation(906, 349);	
 		thearea.setLocation(350,349);					
 		// Button Feature Toggle:
 		// Client:
