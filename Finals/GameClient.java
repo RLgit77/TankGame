@@ -76,7 +76,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 				count++;
 				panel.mouseY[ClientNumber] = Integer.parseInt(split[count]);
 			} else if(split[count].equals("spacebar")){
-				panel.rightclicked[ClientNumber] = true;
+				panel.placeMine[ClientNumber] = true;
 			//Received Text
 			} else if(split[count].equals("text")){		//format is IP,"clicked",mouseX,mouseY
 				count++;
@@ -145,23 +145,6 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 				isD = true;
 			}
 		}
-		if(e.getKeyCode() == 13){
-			blnSendText = true;
-			if(blnSendText == false){
-				thearea.setVisible(true);
-				thescroll.setVisible(true);
-				thefield.setVisible(true);
-				blnSendText = true;
-				System.out.println("setting things to true");
-			}
-			else{
-				thearea.setVisible(false);
-				thescroll.setVisible(false);
-				thefield.setVisible(false);
-				System.out.println("setting things to false");
-				blnSendText = false;
-			}
-		}
 	}
 	public void keyReleased(KeyEvent e){
 		//change to false
@@ -227,7 +210,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			panel.setLayout(null);
 		timer = new Timer(1000/60, this);
 			timer.start();
-
+		
 		//ChatBox
 		thearea = new JTextArea(); 
 		thearea.setOpaque(false);
@@ -238,13 +221,12 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		thescroll.setSize(350, 200);
 		thescroll.setLocation(930, 485);
 		panel.add(thescroll);
-
 		thefield = new JTextField();
 		thefield.setSize(350, 35);
 		thefield.setLocation(930, 685);
 		thefield.addActionListener(this);
 		panel.add(thefield);
-
+		
 		frame.setContentPane(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
@@ -265,8 +247,25 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			panel.setPreferredSize(new Dimension(1280,720));
 			panel.addMouseMotionListener(this);
 			panel.addMouseListener(this);
+			panel.setLayout(null);
 		timer = new Timer(1000/60, this);
 			timer.start();
+
+		//ChatBox
+		thearea = new JTextArea(); 
+		thearea.setOpaque(false);
+		thearea.setCaretPosition(thearea.getDocument().getLength());
+		thescroll = new JScrollPane(thearea);
+		thescroll.getViewport().setOpaque(false);
+		thescroll.setOpaque(false);
+		thescroll.setSize(350, 200);
+		thescroll.setLocation(930, 485);
+		panel.add(thescroll);
+		thefield = new JTextField();
+		thefield.setSize(350, 35);
+		thefield.setLocation(930, 685);
+		thefield.addActionListener(this);
+		panel.add(thefield);
 
 		frame.setContentPane(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
