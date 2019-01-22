@@ -28,6 +28,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 	JTextField thefield = new JTextField();
 	String strReceivedChat;
 	String strSentChat;
+	String chatIP;
 	String ClientColour;
 	boolean blnSendText = true;
 	
@@ -79,20 +80,12 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			} else if(split[count].equals("spacebar")){
 				panel.placeMine[ClientNumber] = true;
 			//Received Text
-			} else if(split[count].equals("text")){		//format is IP,"clicked",mouseX,mouseY
+			} else if(split[count].equals("text")){		
 				count++;
 				strReceivedChat = split[count];
-				//Print to chatbox received texts and who sent them
-				if(ClientNumber == 1){
-					ClientColour = "Red";
-				}else if(ClientNumber == 2){
-					ClientColour = "Yellow";
-				}else if(ClientNumber == 3){
-					ClientColour = "Green";
-				}else if(ClientNumber == 4){
-					ClientColour = "Blue";
-				}				
-				thearea.append(ClientColour+"  :  "+strReceivedChat + "\n");
+				System.out.println(strReceivedChat);
+				//thearea.append(ClientNumber+"  :  "+strReceivedChat + "\n");
+				thearea.append(strReceivedChat + "\n");
 				//Autoscroll
 				thearea.setCaretPosition(thearea.getDocument().getLength());
 			}
@@ -121,7 +114,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		else if(e.getSource() == thefield){
 			if(blnSendText == true){
 			strSentChat = thefield.getText();
-			ssm.sendText(",text,"+strSentChat);
+			ssm.sendText(",text,"+chatIP+"   :   "+strSentChat);
 			thefield.setText(" ");
 			frame.requestFocus();
 			}
@@ -251,6 +244,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		
 		ssm = new SuperSocketMaster(ServerIP,1337, this);	//moved this to end - otherwise it begins before the server and doesn't connect
 		IP = Math.random()+"";	//assigns a random ID to each client
+		chatIP = ssm.getMyAddress();
 		ssm.connect();
 		ssm.sendText(IP+",up,f"); //send text to get server to assign this IP a player number
 		
