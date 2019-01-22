@@ -22,6 +22,13 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 	Boolean isS = false;
 	Boolean isD = false;
 	
+	//InGame Chat variables
+	JTextArea thearea = new JTextArea();
+	JScrollPane thescroll = new JScrollPane(thearea);
+	JTextField thefield = new JTextField();
+	String strReceivedChat;
+	String strSentChat;
+	boolean blnSendText = true;
 	
 	//-----------------------------------------------------------------METHODS-----------------------------------------------------------------//
 	
@@ -70,6 +77,12 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 				panel.mouseY[ClientNumber] = Integer.parseInt(split[count]);
 			} else if(split[count].equals("spacebar")){
 				panel.rightclicked[ClientNumber] = true;
+			//Received Text
+			} else if(split[count].equals("text")){		//format is IP,"clicked",mouseX,mouseY
+				count++;
+				strReceivedChat = split[count];
+				//Print to chatbox received texts
+				thearea.append(strReceivedChat + "\n");
 			}
 			//end of variables
 		}
@@ -91,10 +104,16 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			} else if (split[0].equals("playerID") && split[1].equals(IP)){
 				panel.ClientPlayer = Integer.parseInt(split[2]);
 			}
-			
-			
 		}
-		
+		//Sending texts to other chatboxes
+		else if(e.getSource() == thefield){
+			if(blnSendText == true){
+			strSentChat = thefield.getText();
+			ssm.sendText(IP+",text,"+IP+" : "+strSentChat);
+			thefield.setText(" ");
+			frame.requestFocus();
+			}
+		}
 		if(e.getSource() == timer){
 			panel.repaint();
 		}
@@ -124,6 +143,23 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			if(isD == false){
 				ssm.sendText(IP+",right,t");
 				isD = true;
+			}
+		}
+		if(e.getKeyCode() == 13){
+			blnSendText = true;
+			if(blnSendText == false){
+				thearea.setVisible(true);
+				thescroll.setVisible(true);
+				thefield.setVisible(true);
+				blnSendText = true;
+				System.out.println("setting things to true");
+			}
+			else{
+				thearea.setVisible(false);
+				thescroll.setVisible(false);
+				thefield.setVisible(false);
+				System.out.println("setting things to false");
+				blnSendText = false;
 			}
 		}
 	}
@@ -164,6 +200,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		//sends location as well
 		ssm.sendText(IP+",clicked,"+(e.getX()-panel.xShift)+","+(e.getY()-panel.yShift));
 		}
+		frame.requestFocus();
 	}
 	public void mouseClicked(MouseEvent e){	//after release
 	}
@@ -187,8 +224,26 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			panel.setPreferredSize(new Dimension(1280,720));
 			panel.addMouseMotionListener(this);
 			panel.addMouseListener(this);
+			panel.setLayout(null);
 		timer = new Timer(1000/60, this);
 			timer.start();
+
+		//ChatBox
+		thearea = new JTextArea(); 
+		thearea.setOpaque(false);
+		thearea.setCaretPosition(thearea.getDocument().getLength());
+		thescroll = new JScrollPane(thearea);
+		thescroll.getViewport().setOpaque(false);
+		thescroll.setOpaque(false);
+		thescroll.setSize(350, 200);
+		thescroll.setLocation(930, 485);
+		panel.add(thescroll);
+
+		thefield = new JTextField();
+		thefield.setSize(350, 35);
+		thefield.setLocation(930, 685);
+		thefield.addActionListener(this);
+		panel.add(thefield);
 
 		frame.setContentPane(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
