@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.io.*; // USE FOR MAP
 import java.awt.image.*;
 import javax.imageio.*;
+import java.lang.Object.*;
+import java.awt.Font.*;
 
 public class GamePanel extends JPanel{
 	
@@ -77,6 +79,7 @@ public class GamePanel extends JPanel{
 	BufferedImage p2w;
 	BufferedImage p3w;
 	BufferedImage p4w;
+	BufferedImage sb;
 	{
 		try {
 	    redTank = ImageIO.read(new File("Sprites/Tank Body Red.png"));
@@ -110,6 +113,7 @@ public class GamePanel extends JPanel{
 		p2w = ImageIO.read(new File("Sprites/P2 Win.png"));
 		p3w = ImageIO.read(new File("Sprites/P3 Win.png"));
 		p4w = ImageIO.read(new File("Sprites/P4 Win.png"));
+		sb = ImageIO.read(new File("Sprites/Scoreboard.png"));
 	    
 		} catch (IOException e) {
 			System.out.println("Image loading error: "+e);
@@ -526,11 +530,14 @@ public class GamePanel extends JPanel{
 		
 		
 		//show score
+		g.drawImage(sb, 1280-210, 0, null);
+		Font font = new Font("Helvetica", Font.PLAIN, 30);
+        g.setFont(font);
 		g.setColor(Color.WHITE);
-		g.drawString("Red  :  "+score[0], 1280-100, 100);
-		g.drawString("Yellow  :  "+score[1], 1280-100, 120);
-		g.drawString("Green  :  "+score[2], 1280-100, 140);
-		g.drawString("Blue  :  "+score[3], 1280-100, 160);
+		g.drawString(""+score[0], 1280-70, 85);
+		g.drawString(""+score[1], 1280-70, 135);
+		g.drawString(""+score[2], 1280-70, 185);
+		g.drawString(""+score[3], 1280-70, 235);
 		g.setColor(Color.BLACK);
 		
 		
