@@ -83,6 +83,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 				strReceivedChat = split[count];
 				//Print to chatbox received texts
 				thearea.append(strReceivedChat + "\n");
+				thearea.setCaretPosition(thearea.getDocument().getLength());
 			}
 			//end of variables
 		}
@@ -212,9 +213,12 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			timer.start();
 		
 		//ChatBox
+		Font font = new Font("Helvetica", Font.BOLD, 15);
 		thearea = new JTextArea(); 
 		thearea.setOpaque(false);
 		thearea.setCaretPosition(thearea.getDocument().getLength());
+		thearea.setForeground(Color.WHITE);
+        thearea.setFont(font);
 		thescroll = new JScrollPane(thearea);
 		thescroll.getViewport().setOpaque(false);
 		thescroll.setOpaque(false);
@@ -225,6 +229,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		thefield.setSize(350, 35);
 		thefield.setLocation(930, 685);
 		thefield.addActionListener(this);
+        thefield.setFont(font);
 		panel.add(thefield);
 		
 		frame.setContentPane(panel);
@@ -252,9 +257,12 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			timer.start();
 
 		//ChatBox
+		Font font = new Font("Helvetica", Font.BOLD, 11);
 		thearea = new JTextArea(); 
 		thearea.setOpaque(false);
 		thearea.setCaretPosition(thearea.getDocument().getLength());
+		thearea.setForeground(Color.WHITE);
+        thearea.setFont(font);
 		thescroll = new JScrollPane(thearea);
 		thescroll.getViewport().setOpaque(false);
 		thescroll.setOpaque(false);
@@ -265,7 +273,9 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		thefield.setSize(350, 35);
 		thefield.setLocation(930, 685);
 		thefield.addActionListener(this);
+        thefield.setFont(font);
 		panel.add(thefield);
+		
 
 		frame.setContentPane(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
