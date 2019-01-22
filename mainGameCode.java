@@ -23,7 +23,7 @@ public class mainGameCode implements ActionListener{
 		if(e.getSource() == client){
 			// Insert code which leads to game client screen
 			System.out.println("Starting a client");
-/*add server IP here*/			IP = "127.0.0.1";
+			IP = "whatever they enter";
 			new GameClient(IP);
 			// Disable Buttons
 			client.setVisible(false);
@@ -35,12 +35,15 @@ public class mainGameCode implements ActionListener{
 			backtomenu2.setVisible(false);
 			frame.setExtendedState(JFrame.ICONIFIED);
 		}else if(e.getSource() == server){
-			// Insert code which leads to game server screen
 			System.out.println("Starting a server");
 			ServerThread sT = new ServerThread();
 			Thread sThread = new Thread(sT);
 			sThread.start();
-/*add server IP here*/			IP = "127.0.0.1";
+			try{
+				Thread.sleep(500);
+			} catch (InterruptedException i){
+			}
+			IP = sT.serverIP;	//this is the server's IP
 			new GameClient(IP);
 			// Disable Buttons
 			client.setVisible(false);

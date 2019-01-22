@@ -10,6 +10,7 @@ public class GameServer implements ActionListener{
 	//ssm variables
 	SuperSocketMaster ssm;
 	String data;
+	String ServerIP;
 	
 	//ID players - list is initially empty
 	String[] savedIPs = new String[4];
@@ -66,6 +67,8 @@ public class GameServer implements ActionListener{
 
 		ssm = new SuperSocketMaster(1337, this);
 		ssm.connect();
+		ServerIP = ssm.getMyAddress();
+		System.out.println("Server launched at: "+ServerIP);
 
 
 	}
