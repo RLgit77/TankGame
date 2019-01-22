@@ -211,7 +211,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 	}
 
 	//---------------------------------------------------------------CONSTRUCTOR---------------------------------------------------------------//
-	public GameClient(){
+	public GameClient(String ServerIP){
 
 		frame = new JFrame("Client");
 			frame.addKeyListener(this);
@@ -249,7 +249,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		frame.pack();
 		frame.setVisible(true);
 		
-		ssm = new SuperSocketMaster("127.0.0.1",1337, this);	//moved this to end - otherwise it begins before the server and doesn't connect
+		ssm = new SuperSocketMaster(ServerIP,1337, this);	//moved this to end - otherwise it begins before the server and doesn't connect
 		IP = Math.random()+"";	//assigns a random ID to each client
 		ssm.connect();
 		ssm.sendText(IP+",up,f"); //send text to get server to assign this IP a player number

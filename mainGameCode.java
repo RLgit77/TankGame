@@ -14,6 +14,7 @@ public class mainGameCode implements ActionListener{
 	JButton nexttopandt; // Arrow Button that leads to powerup and tiles
 	JButton backtomenu2; // Arrow Buttons that lead back to MM
 	Timer timer;
+	String IP = "127.0.0.1";
 		
 	// Methods
 	// Button Direct Interaction
@@ -22,7 +23,8 @@ public class mainGameCode implements ActionListener{
 		if(e.getSource() == client){
 			// Insert code which leads to game client screen
 			System.out.println("Starting a client");
-			new GameClient();
+/*add server IP here*/			IP = "127.0.0.1";
+			new GameClient(IP);
 			// Disable Buttons
 			client.setVisible(false);
 			server.setVisible(false);
@@ -38,7 +40,8 @@ public class mainGameCode implements ActionListener{
 			ServerThread sT = new ServerThread();
 			Thread sThread = new Thread(sT);
 			sThread.start();
-			new GameClient();
+/*add server IP here*/			IP = "127.0.0.1";
+			new GameClient(IP);
 			// Disable Buttons
 			client.setVisible(false);
 			server.setVisible(false);
