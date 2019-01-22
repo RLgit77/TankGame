@@ -111,15 +111,15 @@ public class GamePanel extends JPanel{
 	int xShift = 0;
 	int yShift = 0;
 	
-	//original map values (just used below in map array - make random? all randomness must be server side)
-	int p0x=640;
-	int p1x=300;
-	int p2x=400;
-	int p3x=500;
-	int p0y=360;
-	int p1y=400;
-	int p2y=400;
-	int p3y=400;
+	//original map values and respawn locations
+	int p0x=320;
+	int p1x=320;
+	int p2x=2432-320;
+	int p3x=2432-320;
+	int p0y=320;
+	int p1y=1408-320;
+	int p2y=320;
+	int p3y=1408-320;
 	
 	//bullet values
 	boolean[] isRemoved = new boolean[100000];
@@ -346,8 +346,25 @@ public class GamePanel extends JPanel{
 							explosionX[explosionNumber] = (int)playerX[p];
 							explosionY[explosionNumber] = (int)playerY[p];
 							explosionNumber++;
-/*EDIT HERE */							playerX[p] = 300+p*50;	//just so they spawn differently
-							playerY[p] = 300;
+							
+							switch (p) {
+								case 0:
+								playerX[p] = p0x;
+								playerY[p] = p0y;
+								break;
+								case 1:
+								playerX[p] = p1x;
+								playerY[p] = p1y;
+								break;
+								case 2:
+								playerX[p] = p2x;
+								playerY[p] = p2y;
+								break;
+								case 3:
+								playerX[p] = p3x;
+								playerY[p] = p3y;
+								break;
+							}
 							
 							placedMine[i] = false;	//remove exploded mine
 							mineTimer[i] = 0;		//reset timer
@@ -460,8 +477,26 @@ public class GamePanel extends JPanel{
 							explosionX[explosionNumber] = (int)playerX[p];
 							explosionY[explosionNumber] = (int)playerY[p];
 							explosionNumber++;
-/*EDIT HERE */							playerX[p] = 300+p*50;
-							playerY[p] = 300;
+
+							switch (p) {
+								case 0:
+								playerX[p] = p0x;
+								playerY[p] = p0y;
+								break;
+								case 1:
+								playerX[p] = p1x;
+								playerY[p] = p1y;
+								break;
+								case 2:
+								playerX[p] = p2x;
+								playerY[p] = p2y;
+								break;
+								case 3:
+								playerX[p] = p3x;
+								playerY[p] = p3y;
+								break;
+							}
+							
 							playerTimer[p]=0;
 							isRemoved[i] = true;
 							score[shotBullet[i]]++;
