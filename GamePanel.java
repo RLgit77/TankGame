@@ -180,7 +180,7 @@ public class GamePanel extends JPanel{
 		
 		//get shift to center player
 		if(ClientPlayer != -1){
-			xShift = 640 - (int)playerX[ClientPlayer] -350/2; //350 for chatbox
+			xShift = 640 - (int)playerX[ClientPlayer];
 			yShift = 360 - (int)playerY[ClientPlayer];
 		}	
 		
