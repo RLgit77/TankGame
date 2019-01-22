@@ -73,6 +73,9 @@ public class GamePanel extends JPanel{
 	BufferedImage explosion1;
 	BufferedImage explosion2;
 	BufferedImage explosion3;
+	BufferedImage explosion4;
+	BufferedImage explosion5;
+	BufferedImage explosion6;
 	BufferedImage hole;
 	BufferedImage fog;
 	BufferedImage p1w;
@@ -107,7 +110,10 @@ public class GamePanel extends JPanel{
 		explosion1 = ImageIO.read(new File("Sprites/explosion1.png"));
 		explosion2 = ImageIO.read(new File("Sprites/explosion2.png"));
 		explosion3 = ImageIO.read(new File("Sprites/explosion3.png"));
-		explosion3 = ImageIO.read(new File("Sprites/crater.png"));
+		explosion4 = ImageIO.read(new File("Sprites/explosion4.png"));
+		explosion5 = ImageIO.read(new File("Sprites/explosion5.png"));
+		explosion6 = ImageIO.read(new File("Sprites/explosion6.png"));
+		hole = ImageIO.read(new File("Sprites/crater.png"));
 		fog = ImageIO.read(new File("Sprites/fog.png"));
 		p1w = ImageIO.read(new File("Sprites/P1 Win.png"));
 		p2w = ImageIO.read(new File("Sprites/P2 Win.png"));
@@ -228,7 +234,17 @@ public class GamePanel extends JPanel{
 			} else if(explosionTimer[i] < 40){
 				g.drawImage(explosion2,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
 			} else if(explosionTimer[i] < 60){
+				g.drawImage(hole,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
 				g.drawImage(explosion3,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+			} else if(explosionTimer[i] < 80){
+				g.drawImage(hole,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+				g.drawImage(explosion4,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+			} else if(explosionTimer[i] < 100){
+				g.drawImage(hole,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+				g.drawImage(explosion5,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+			} else if(explosionTimer[i] < 120){
+				g.drawImage(hole,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+				g.drawImage(explosion6,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
 			} else {	//hole
 				g.drawImage(hole,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
 			}
