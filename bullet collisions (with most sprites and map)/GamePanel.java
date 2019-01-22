@@ -215,6 +215,16 @@ public class GamePanel extends JPanel{
 					playerX[i] = playerX[i]+2;
 				}
 			}
+			
+			//powerups
+			if(map[(int) (playerX[i]/128.0)][(int) (playerY[i]/128.0)].equals("l")){
+				turretType[i] = "laser";
+			} else if(map[(int) (playerX[i]/128.0)][(int) (playerY[i]/128.0)].equals("g")){
+				turretType[i] = "minigun";
+			} else {
+				turretType[i] = "default";
+			}
+				
 		
 			//mouse input
 			if(clicked[i]){
