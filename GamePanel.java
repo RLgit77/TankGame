@@ -316,7 +316,7 @@ public class GamePanel extends JPanel{
 						numberOfBullets++;
 					}	//while fireAnother
 					
-					cooldown[i] = 120;
+					cooldown[i] = 35;
 					
 				}//cooldown
 				

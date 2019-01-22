@@ -83,6 +83,8 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 				strReceivedChat = split[count];
 				//Print to chatbox received texts
 				thearea.append(strReceivedChat + "\n");
+				//Autoscroll
+				thearea.setCaretPosition(thearea.getDocument().getLength());
 			}
 			//end of variables
 		}
@@ -212,7 +214,10 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			timer.start();
 		
 		//ChatBox
-		thearea = new JTextArea(); 
+		Font font = new Font("Helvetica", Font.PLAIN, 13);
+        thearea = new JTextArea();
+        thearea.setFont(font);
+        thearea.setForeground(Color.WHITE);
 		thearea.setOpaque(false);
 		thearea.setCaretPosition(thearea.getDocument().getLength());
 		thescroll = new JScrollPane(thearea);
@@ -222,6 +227,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		thescroll.setLocation(930, 485);
 		panel.add(thescroll);
 		thefield = new JTextField();
+		thefield.setFont(font);
 		thefield.setSize(350, 35);
 		thefield.setLocation(930, 685);
 		thefield.addActionListener(this);
@@ -252,6 +258,9 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 			timer.start();
 
 		//ChatBox
+		Font font = new Font("Helvetica", Font.BOLD, 11);
+        thearea.setFont(font);
+        thearea.setForeground(Color.WHITE);
 		thearea = new JTextArea(); 
 		thearea.setOpaque(false);
 		thearea.setCaretPosition(thearea.getDocument().getLength());
