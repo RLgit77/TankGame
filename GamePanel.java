@@ -29,9 +29,13 @@ public class GamePanel extends JPanel{
 		}
 	}
 	
-	//scoring
+	//scoring/deaths
 	int[] shotBullet = new int[100000];
 	int[] score = new int[4];
+	int explosionNumber = 0;
+	int[] explosionX = new int[100000];
+	int[] explosionY = new int[100000];
+	int[] explosionTimer = new int[100000];
 		
 	//drawing vars
 	String[] turretType = new String[4];
@@ -63,7 +67,11 @@ public class GamePanel extends JPanel{
 	BufferedImage armedMine;
 	BufferedImage bullet;
 	BufferedImage beam;
-	BufferedImage entireMap;//	<-----------------------------------------Replace this with the map
+	BufferedImage entireMap;
+	BufferedImage explosion1;
+	BufferedImage explosion2;
+	BufferedImage explosion3;
+	BufferedImage hole;
 	{
 		try {
 	    redTank = ImageIO.read(new File("Sprites/Tank Body Red.png"));
@@ -88,6 +96,10 @@ public class GamePanel extends JPanel{
 		bullet = ImageIO.read(new File("Sprites/Bullet.png"));
 		beam = ImageIO.read(new File("Sprites/Beam.png"));
 		entireMap = ImageIO.read(new File("Sprites/Hovertanks Map.png"));
+		explosion1 = ImageIO.read(new File("Sprites/explosion1.png"));
+		explosion2 = ImageIO.read(new File("Sprites/explosion2.png"));
+		explosion3 = ImageIO.read(new File("Sprites/explosion3.png"));
+		explosion3 = ImageIO.read(new File("Sprites/crater.png"));
 	    
 		} catch (IOException e) {
 			System.out.println("Image loading error: "+e);
@@ -114,7 +126,8 @@ public class GamePanel extends JPanel{
 	{Arrays.fill(isRemoved, false);}
 	int numberOfBullets = 0;
 	int removedBullets = 0;
-	int cooldown = 0;
+	int[] cooldown = new int[4];
+	{Arrays.fill(cooldown, 0);}
 	double[] bulletAngle = new double[100000];
 	int[] flip = new int[100000];
 	double[] bulletDistance = new double[100000];
@@ -125,6 +138,8 @@ public class GamePanel extends JPanel{
 	double[] bulletSpeed = new double[100000];
 	int[] bulletSize = new int[100000];
 	String[] bulletType = new String[100000];
+	int[] powerupTimer = new int[4];
+	{Arrays.fill(powerupTimer, 0);}
 	
 	//landmine values
 	boolean[] placedMine = new boolean[4];
@@ -152,7 +167,7 @@ public class GamePanel extends JPanel{
 	
 	//player variables
 	double[] playerX = new double[4];
-	{	//code in {} runs after the constructor, sets default map locations - in server?
+	{	//code in {} runs after the constructor, sets default map locations
 		playerX[0] = p0x;
 		playerX[1] = p1x;
 		playerX[2] = p2x;
@@ -191,6 +206,20 @@ public class GamePanel extends JPanel{
 		
 		//draw map
 		g.drawImage(entireMap,xShift,yShift,2432,1408,null);	
+		
+		//--------------------------------------------------------------runs for every explosion--------------------------------------------------------------//
+		for(int i = 0; i < explosionNumber; i++){
+			if(explosionTimer[i] < 20){	//all 64x64
+				g.drawImage(explosion1,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+			} else if(explosionTimer[i] < 40){
+				g.drawImage(explosion2,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+			} else if(explosionTimer[i] < 60){
+				g.drawImage(explosion3,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+			} else {	//hole
+				g.drawImage(hole,explosionX[i]-32+xShift,explosionY[i]-32+yShift,64,64,null);
+			}
+			explosionTimer[i]++;
+		}
 			
 		//----------------------------------------------------------------runs for every player----------------------------------------------------------------//
 		for(int i = 0; i<playerNumber; i++){
@@ -219,63 +248,76 @@ public class GamePanel extends JPanel{
 			//powerups
 			if(map[(int) (playerX[i]/128.0)][(int) (playerY[i]/128.0)].equals("l")){
 				turretType[i] = "laser";
+				powerupTimer[i] = 600;
 			} else if(map[(int) (playerX[i]/128.0)][(int) (playerY[i]/128.0)].equals("g")){
 				turretType[i] = "minigun";
+				powerupTimer[i] = 600;
 			} else {
-				turretType[i] = "default";
+				if(powerupTimer[i] < 0){
+					turretType[i] = "default";
+				} else {
+					powerupTimer[i]--;
+				}
 			}
 				
 		
 			//mouse input
+			cooldown[i]--;
 			if(clicked[i]){
-				Boolean fireAnother = true; //for different gun types
-				int numberFired = 0;
+				if(cooldown[i] < 0){
+					Boolean fireAnother = true; //for different gun types
+					int numberFired = 0;
+					
+					while(fireAnother){ //stuff for one bullet, multiple times
+						shotBullet[numberOfBullets] = i;
+						bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]));
+						bulletLaunchX[numberOfBullets] = (int)playerX[i];
+						bulletLaunchY[numberOfBullets] = (int)playerY[i];
+						bulletX[numberOfBullets] = (int)playerX[i];
+						bulletY[numberOfBullets] = (int)playerY[i];
+						bulletSpeed[numberOfBullets] = 3;
+						bulletSize[numberOfBullets] = 10;
+						bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30; //more than player size + bullet size
+						//fix trig math
+						if(mouseX[i] < playerX[i]){
+							flip[numberOfBullets] = 1;
+							angle[i] = bulletAngle[numberOfBullets] - 1.57;	//half pi since all images are already rotated
+						} else {
+							flip[numberOfBullets] = 0;
+							angle[i] = bulletAngle[numberOfBullets] + 1.57;
+						}
+						//changes based in bullet type
+						bulletType[numberOfBullets] = turretType[i];
+						if(turretType[i].equals("laser")){	//faster bullets, start further
+							bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30+numberFired*5;
+							bulletSpeed[numberOfBullets] = 8;
+						} else if (turretType[i].equals("minigun")){
+							bulletSpeed[numberOfBullets] = 2;
+							bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]))+(Math.random()*0.4-0.2);//shotgun should be in a +- 0.2 arc
+							bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30+numberFired*2;
+						}
+						
+						//see if it should fire another bullet
+						if(turretType[i].equals("laser")){	//faster bullets, start further
+							if(numberFired > 15){
+								fireAnother = false;
+							}
+						} else if (turretType[i].equals("minigun")){
+							if(numberFired > 6){
+								fireAnother = false;
+							}
+						} else {
+							fireAnother = false;
+						}
+						
+						numberFired++;
+						numberOfBullets++;
+					}	//while fireAnother
+					
+					cooldown[i] = 120;
+					
+				}//cooldown
 				
-				while(fireAnother){ //stuff for one bullet, multiple times
-					shotBullet[numberOfBullets] = i;
-					bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]));
-					bulletLaunchX[numberOfBullets] = (int)playerX[i];
-					bulletLaunchY[numberOfBullets] = (int)playerY[i];
-					bulletX[numberOfBullets] = (int)playerX[i];
-					bulletY[numberOfBullets] = (int)playerY[i];
-					bulletSpeed[numberOfBullets] = 3;
-					bulletSize[numberOfBullets] = 10;
-					bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30; //more than player size + bullet size
-					//fix trig math
-					if(mouseX[i] < playerX[i]){
-						flip[numberOfBullets] = 1;
-						angle[i] = bulletAngle[numberOfBullets] - 1.57;	//half pi since all images are already rotated
-					} else {
-						flip[numberOfBullets] = 0;
-						angle[i] = bulletAngle[numberOfBullets] + 1.57;
-					}
-					//changes based in bullet type
-					bulletType[numberOfBullets] = turretType[i];
-					if(turretType[i].equals("laser")){	//faster bullets, start further
-						bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30+numberFired*5;
-						bulletSpeed[numberOfBullets] = 8;
-					} else if (turretType[i].equals("minigun")){
-						bulletSpeed[numberOfBullets] = 2;
-						bulletAngle[numberOfBullets] = Math.atan((mouseY[i]-playerY[i])/(mouseX[i]-playerX[i]))+(Math.random()*0.4-0.2);//shotgun should be in a +- 0.2 arc
-						bulletDistance[numberOfBullets] = 10+bulletSize[numberOfBullets]+30+numberFired*2;
-					}
-					
-					//see if it should fire another bullet
-					if(turretType[i].equals("laser")){	//faster bullets, start further
-						if(numberFired > 15){
-							fireAnother = false;
-						}
-					} else if (turretType[i].equals("minigun")){
-						if(numberFired > 6){
-							fireAnother = false;
-						}
-					} else {
-						fireAnother = false;
-					}
-					
-					numberFired++;
-					numberOfBullets++;
-				}	//while fireAnother
 			}	//if clicked
 			
 			clicked[i] = false;
@@ -295,15 +337,16 @@ public class GamePanel extends JPanel{
 				//if placed mine is armed
 				if(mineTimer[i] > 60*5){	//5 seconds @ 60 frames/sec
 					g.setColor(Color.RED);
-					g.fillOval((int)mineX[i]-15+xShift,(int)mineY[i]-15+yShift,30,30);
 					g.drawImage(armedMine,(int)mineX[i]-16+xShift,(int)mineY[i]-16+yShift,32,32,null);
 					g.setColor(Color.BLACK);
 					//check collisions with all players
 					for(int p = 0; p<playerNumber; p++){
 						if( ((mineX[i]+15) > (playerX[p]-10)) && ((mineX[i]-15) < (playerX[p]+10)) && ((mineY[i]+15) > (playerY[p]-10)) && ((mineY[i]-15) < (playerY[p]+10)) ){
-							g.fillRect((int)playerX[p]-15+xShift,(int)playerY[p]-15+yShift,30,30);		//explosion here
-							//reset position when dead, do other stuff here
-							playerX[p] = 300+p*50;	//just so they spawn differently
+							//explosion at that location
+							explosionX[explosionNumber] = (int)playerX[p];
+							explosionY[explosionNumber] = (int)playerY[p];
+							explosionNumber++;
+/*EDIT HERE */							playerX[p] = 300+p*50;	//just so they spawn differently
 							playerY[p] = 300;
 							
 							placedMine[i] = false;	//remove exploded mine
@@ -414,9 +457,10 @@ public class GamePanel extends JPanel{
 				for(int p = 0; p<playerNumber; p++){
 					if(playerTimer[p] > 60*5){	//5 seconds @ 60 frames/sec
 						if( ((bulletX[i]+bulletSize[i]) > (playerX[p]-10)) && ((bulletX[i]-bulletSize[i]) < (playerX[p]+10)) && ((bulletY[i]+bulletSize[i]) > (playerY[p]-10)) && ((bulletY[i]-bulletSize[i]) < (playerY[p]+10)) ){
-							g.fillRect((int)playerX[p]-15+xShift,(int)playerY[p]-15+yShift,30,30);
-							//reset position when dead, do other stuff here
-							playerX[p] = 300+p*50;	//just so they spawn differently
+							explosionX[explosionNumber] = (int)playerX[p];
+							explosionY[explosionNumber] = (int)playerY[p];
+							explosionNumber++;
+/*EDIT HERE */							playerX[p] = 300+p*50;
 							playerY[p] = 300;
 							playerTimer[p]=0;
 							isRemoved[i] = true;
