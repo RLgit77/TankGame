@@ -73,6 +73,10 @@ public class GamePanel extends JPanel{
 	BufferedImage explosion3;
 	BufferedImage hole;
 	BufferedImage fog;
+	BufferedImage p1w;
+	BufferedImage p2w;
+	BufferedImage p3w;
+	BufferedImage p4w;
 	{
 		try {
 	    redTank = ImageIO.read(new File("Sprites/Tank Body Red.png"));
@@ -102,6 +106,10 @@ public class GamePanel extends JPanel{
 		explosion3 = ImageIO.read(new File("Sprites/explosion3.png"));
 		explosion3 = ImageIO.read(new File("Sprites/crater.png"));
 		fog = ImageIO.read(new File("Sprites/fog.png"));
+		p1w = ImageIO.read(new File("Sprites/P1 Win.png"));
+		p2w = ImageIO.read(new File("Sprites/P2 Win.png"));
+		p3w = ImageIO.read(new File("Sprites/P3 Win.png"));
+		p4w = ImageIO.read(new File("Sprites/P4 Win.png"));
 	    
 		} catch (IOException e) {
 			System.out.println("Image loading error: "+e);
@@ -531,25 +539,25 @@ public class GamePanel extends JPanel{
 			g.setColor(Color.BLACK);
 			g.fillRect(0,0,1280,720);
 			g.setColor(Color.WHITE);
-			g.drawString("Player 1 wins!",1280/2-50,720/2-10);
+			g.drawImage(p1w,0,0,null);
 			//game end stuff
 		} else if(score[1] > 15){
 			g.setColor(Color.BLACK);
 			g.fillRect(0,0,1280,720);
 			g.setColor(Color.WHITE);
-			g.drawString("Player 2 wins!",1280/2-50,720/2-10);
+			g.drawImage(p2w,0,0,null);
 			//game end stuff
 		} else if(score[2] > 15){
 			g.setColor(Color.BLACK);
 			g.fillRect(0,0,1280,720);
 			g.setColor(Color.WHITE);
-			g.drawString("Player 3 wins!",1280/2-50,720/2-10);
+			g.drawImage(p3w,0,0,null);
 			//game end stuff
 		} else if(score[3] > 15){
 			g.setColor(Color.BLACK);
 			g.fillRect(0,0,1280,720);
 			g.setColor(Color.WHITE);
-			g.drawString("Player 4 wins!",1280/2-50,720/2-10);
+			g.drawImage(p4w,0,0,null);
 			//game end stuff
 		}
 		
