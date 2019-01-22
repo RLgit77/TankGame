@@ -21,9 +21,9 @@ public class mainGameCode implements ActionListener{
 	public void actionPerformed(ActionEvent e){
 		// IN MAIN MENU:
 		if(e.getSource() == client){
-			// Insert code which leads to game client screen
-			System.out.println("Starting a client");
+//get IP here
 			IP = "whatever they enter";
+			System.out.println("Starting a client");
 			new GameClient(IP);
 			// Disable Buttons
 			client.setVisible(false);
@@ -44,6 +44,7 @@ public class mainGameCode implements ActionListener{
 			} catch (InterruptedException i){
 			}
 			IP = sT.serverIP;	//this is the server's IP
+//show IP here
 			new GameClient(IP);
 			// Disable Buttons
 			client.setVisible(false);
