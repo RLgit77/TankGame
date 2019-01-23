@@ -204,34 +204,34 @@ public class mainGameCode implements ActionListener{
 		thearea.setLocation(350,349);					
 		// Button Feature Toggle:
 		// Client:
-		client.setBorder(null);
+		//client.setBorder(null);
 		client.setContentAreaFilled(false);
 		client.setOpaque(false);
 		// Server:
-		server.setBorder(null);
+		//server.setBorder(null);
 		server.setContentAreaFilled(false);
 		server.setOpaque(false);
 		// Help:
-		help.setBorder(null);
+		//help.setBorder(null);
 		help.setContentAreaFilled(false);
 		help.setOpaque(false);
 		// Back to Menu:
-		backtomenu.setBorder(null);
+		//backtomenu.setBorder(null);
 		backtomenu.setContentAreaFilled(false);
 		backtomenu.setOpaque(false);
-		backtomenu2.setBorder(null);
+		//backtomenu2.setBorder(null);
 		backtomenu2.setContentAreaFilled(false);
 		backtomenu2.setOpaque(false);
 		// Controls:
-		backtocontrols.setBorder(null);
+		//backtocontrols.setBorder(null);
 		backtocontrols.setContentAreaFilled(false);
 		backtocontrols.setOpaque(false);
 		// Powerup and Tiles:
-		nexttopandt.setBorder(null);
+		//nexttopandt.setBorder(null);
 		nexttopandt.setContentAreaFilled(false);
 		nexttopandt.setOpaque(false);
 		// Client Connect:
-		clientconnect.setBorder(null);
+		//clientconnect.setBorder(null);
 		clientconnect.setContentAreaFilled(false);
 		clientconnect.setOpaque(false);
 		// Adding Buttons to Panel:
