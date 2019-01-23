@@ -238,6 +238,7 @@ public class GameClient implements ActionListener, KeyListener, MouseListener, M
 		panel.add(thefield);
 		
 		frame.setContentPane(panel);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
